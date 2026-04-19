@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(awk '{print $2}')",
+      "Bash(git remote *)",
+      "Bash(rm \"D:/Meu Drive/Bilder Ai/.git/index.lock\")",
+      "Bash(git -C \"D:/Meu Drive/Bilder Ai/mvp_agent_vibe\" status)",
+      "Bash(git -C \"D:/Meu Drive/Bilder Ai\" remote remove origin)"
+    ]
+  }
+}
