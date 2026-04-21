@@ -13,31 +13,16 @@ export default async function ContactDetailPage({
 }) {
   const { id } = await params;
 
-  const contact = db.select().from(contacts).where(eq(contacts.id, id)).get();
+  const [contact] = await db.select().from(contacts).where(eq(contacts.id, id));
   if (!contact) notFound();
 
-  const contactDeals = db
-    .select({
-      id: deals.id,
-      title: deals.title,
-      value: deals.value,
-      stageId: deals.stageId,
-      probability: deals.probability,
-      createdAt: deals.createdAt,
-      stageName: pipelineStages.name,
-      stageColor: pipelineStages.color,
-    })
-    .from(deals)
-    .leftJoin(pipelineStages, eq(deals.stageId, pipelineStages.id))
-    .where(eq(deals.contactId, id))
-    .all();
+  const contactDeals = await db.select({
+    id: deals.id, title: deals.title, value: deals.value,
+    stageId: deals.stageId, probability: deals.probability,
+    createdAt: deals.createdAt, stageName: pipelineStages.name, stageColor: pipelineStages.color,
+  }).from(deals).leftJoin(pipelineStages, eq(deals.stageId, pipelineStages.id)).where(eq(deals.contactId, id));
 
-  const contactActivities = db
-    .select()
-    .from(activities)
-    .where(eq(activities.contactId, id))
-    .orderBy(desc(activities.createdAt))
-    .all();
+  const contactActivities = await db.select().from(activities).where(eq(activities.contactId, id)).orderBy(desc(activities.createdAt));
 
   return (
     <ContactDetailClient
