@@ -12,7 +12,8 @@ Documentacao tecnica da stack do agente SDR WhatsApp em Python puro.
 | Web framework | FastAPI | 0.110 | async nativo, validacao via Pydantic, docs automaticos |
 | Servidor ASGI | Uvicorn[standard] | 0.29 | compativel com FastAPI, suporte a WebSocket e reload em dev |
 | Fila de mensagens / cache de estado | Redis (asyncio) | 5.0 | persistencia entre restarts, pub/sub, TTL nativo |
-| Banco de dados | Supabase (PostgreSQL + pgvector) | 2.0 (SDK Python) | mesmo DB do n8n, sem migracao de dados, RAG via pgvector |
+| Banco de dados (RAG) | Supabase SDK Python | 2.0 | acesso ao schema `public` via PostgREST para pgvector/RAG |
+| Banco de dados (CRM + Memory) | asyncpg | 0.29 | acesso direto ao schema `agente_vibe` via connection pool PostgreSQL |
 | LLM principal | Google Gemini Flash | via google-generativeai 0.8 | custo menor no MVP, troca sem mudar codigo |
 | LLM alternativo | Anthropic Claude | via anthropic 0.40 | qualidade superior para casos complexos |
 | LLM fallback | OpenAI | via openai 1.0 | compatibilidade com providers alternativos |
@@ -58,13 +59,16 @@ O Redis tambem serve como debounce de mensagens (evita processar duplicatas que 
 
 ### Supabase (PostgreSQL + pgvector)
 
-O banco existente do n8n (projeto `cfjyxdqrathzremxdkoi`) ja contem:
+O banco `cfjyxdqrathzremxdkoi` (us-west-2) contem dois schemas:
 
-- Tabela de leads com historico de conversas.
-- Embeddings de RAG (pgvector) para busca semantica nos documentos da agencia.
-- Logs de agendamentos e eventos do calendario.
+- **`public`:** tabela `documents` com embeddings pgvector para RAG. Acessado via `supabase-py` SDK.
+- **`agente_vibe`:** tabelas `contacts` (CRM) e `chat_sessions` (historico). Acessado via `asyncpg` com conexao direta.
 
-Manter o mesmo banco elimina migracao de dados e permite que o n8n continue rodando em paralelo durante a transicao. O SDK Python do Supabase (`supabase >= 2.0`) oferece cliente assincrono compativel com FastAPI.
+#### Por que dois modos de acesso
+
+O PostgREST do Supabase expoe apenas o schema `public` por padrao. Para acessar schemas customizados via SDK seria necessario configurar `pgrst.db_schemas` no dashboard Supabase, o que exige permissao de superuser que o plano free nao concede via SQL.
+
+A solucao adotada: `asyncpg` com `DATABASE_URL` apontando para o pooler Transaction (porta 6543) acessa qualquer schema diretamente via SQL, sem restricoes do PostgREST. O SDK `supabase-py` continua sendo usado apenas para RAG (schema `public`).
 
 ### APScheduler
 

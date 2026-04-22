@@ -130,22 +130,19 @@ Arquivos relevantes: `app/worker.py`, `app/agent.py`.
 
 Armazena e recupera o historico de conversas com duas camadas:
 
-- **Redis (cache quente):** sessao dos ultimos N turnos, TTL de 2 horas. Evita round-trip ao Supabase em mensagens consecutivas rapidas.
-- **Supabase Postgres (persistencia):** tabela compativel com o schema `n8n_chat_*` existente. Toda vez que um turno e concluido, o par (user_message, assistant_response) e gravado no Supabase e o cache Redis e atualizado.
+- **Redis (cache quente):** sessao dos ultimos 50 turnos, TTL de 30 minutos. Evita round-trip ao banco em mensagens consecutivas rapidas.
+- **PostgreSQL direto via asyncpg (persistencia):** tabela `agente_vibe.chat_sessions`. Toda vez que um turno e concluido, o par (user_message, assistant_response) e gravado no banco e o cache Redis e invalidado e reconstruido.
 
 Formato de cada mensagem armazenada:
 
 ```json
 {
-  "session_id": "phone_number",
   "role": "user | assistant",
-  "content": "texto da mensagem",
-  "timestamp": "2026-04-16T10:00:00Z",
-  "metadata": {}
+  "content": "texto da mensagem"
 }
 ```
 
-Arquivos relevantes: `app/memory.py`.
+Arquivos relevantes: `memory/chat.py`.
 
 ### 5. Tools
 
@@ -287,13 +284,17 @@ Arquivos relevantes: `app/followup.py`.
 
 ### Supabase (`cfjyxdqrathzremxdkoi`, us-west-2)
 
-| Tabela | Uso |
-|--------|-----|
-| `documents` | RAG: busca por similaridade com `pgvector` |
-| `contacts` | CRM: leitura e escrita do perfil e stage do lead |
-| `n8n_chat_messages` | Memory: historico de conversas (schema compativel) |
+| Tabela | Schema | Uso | Acesso |
+|--------|--------|-----|--------|
+| `documents` | `public` | RAG: busca por similaridade com `pgvector` | supabase-py SDK |
+| `contacts` | `agente_vibe` | CRM: perfil, stage, followup_count, observacoes do lead | asyncpg direto |
+| `chat_sessions` | `agente_vibe` | Memory: historico de conversas por phone | asyncpg direto |
 
-Acesso via `supabase-py` com `SUPABASE_URL` e `SUPABASE_SERVICE_KEY`.
+Acesso ao schema `agente_vibe` via `asyncpg` (conexao direta PostgreSQL pela `DATABASE_URL`), necessario porque o PostgREST nao expoe schemas customizados sem configuracao no dashboard Supabase. RAG usa `supabase-py` SDK pois opera no schema `public`.
+
+Campos de `agente_vibe.contacts`: `phone`, `name`, `stage`, `followup_count`, `observacoes_sdr`, `nicho`, `last_bot_msg_at`, `last_lead_msg_at`, `created_at`, `updated_at`.
+
+Stages validos: `novo`, `qualificando`, `interesse`, `agendado`, `realizada`, `sem_interesse`, `perdido`, `bloqueado`.
 
 ### Google Calendar
 

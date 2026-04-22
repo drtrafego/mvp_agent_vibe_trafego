@@ -73,16 +73,16 @@ Agente SDR WhatsApp em Python puro. Substitui o workflow n8n em producao (Jmiydf
 - Confirmacao de escrita no Supabase e no cache Redis
 
 **Dependencias:**
-- Supabase Python SDK (tabela `chat_sessions`)
+- `asyncpg` (pool de conexoes direto ao PostgreSQL, tabela `agente_vibe.chat_sessions`)
 - `redis-py` async (cache de sessoes ativas, TTL 30 minutos)
-- `config/` (SUPABASE_URL, SUPABASE_KEY, REDIS_URL)
+- `config/` (DATABASE_URL, REDIS_URL)
 
 **Notas de implementacao:**
-- Schema da tabela `chat_sessions`: `id (uuid)`, `phone (text)`, `role (text)`, `content (text)`, `timestamp (timestamptz)`. Index em `(phone, timestamp)`.
-- Estrategia de cache: ao buscar historico, verificar Redis primeiro. Se miss, buscar Supabase, popular cache e retornar. Ao escrever, gravar em ambos simultaneamente (fire-and-forget no Supabase via asyncio.create_task).
-- Limitar historico retornado ao agente em 50 mensagens (`ORDER BY timestamp DESC LIMIT 50`, depois reverter ordem).
-- TTL Redis de 30 minutos reinicia a cada nova mensagem do contato (EXPIRE renovado em cada append).
-- Nao usar as tabelas `n8n_chat_*` do sistema legado. Criar `chat_sessions` como tabela propria do novo sistema.
+- Schema da tabela `agente_vibe.chat_sessions`: `id (uuid)`, `phone (text)`, `role (text)`, `content (text)`, `created_at (timestamptz)`. Index em `(phone, created_at)`.
+- Estrategia de cache: ao buscar historico, verificar Redis primeiro (`history:{phone}`). Se miss, buscar PostgreSQL via asyncpg, popular cache com TTL de 30min e retornar.
+- Ao escrever, inserir par (user, assistant) no PostgreSQL via `executemany`, depois reconstruir e salvar cache Redis.
+- Limitar historico retornado ao agente em 50 mensagens (`ORDER BY created_at DESC LIMIT 50`, depois reverter ordem).
+- Acesso direto via asyncpg necessario porque o PostgREST do Supabase nao expoe o schema `agente_vibe` sem configuracao no dashboard.
 
 ---
 
@@ -158,15 +158,16 @@ Agente SDR WhatsApp em Python puro. Substitui o workflow n8n em producao (Jmiydf
 - Demais operacoes: booleano de sucesso ou excecao em caso de falha
 
 **Dependencias:**
-- Supabase Python SDK
-- `config/` (SUPABASE_URL, SUPABASE_KEY)
+- `asyncpg` (pool de conexoes direto ao PostgreSQL, tabela `agente_vibe.contacts`)
+- `config/` (DATABASE_URL)
 
 **Notas de implementacao:**
-- Campos esperados na tabela `contacts`: `phone`, `name`, `stage`, `observacoes_sdr`, `followup_count`, `last_lead_msg_at`, `last_bot_msg_at`, `created_at`.
-- Usar `.upsert()` do Supabase SDK para operacoes de escrita, com `on_conflict="phone"`.
-- `save_observation` deve concatenar ao campo existente, nao sobrescrever. Formato sugerido: `[{timestamp}] {nova_observacao}\n{historico_anterior}`.
-- Stages validos (manter consistencia com n8n legado): `"novo"`, `"engajado"`, `"qualificado"`, `"agendado"`, `"nao_qualificado"`, `"perdido"`. Validar antes de gravar.
-- Incrementar `followup_count` com SQL atomico: `UPDATE contacts SET followup_count = followup_count + 1 WHERE phone = $1`, nao via read-modify-write (risco de race condition no follow-up cron).
+- Tabela `agente_vibe.contacts`. Campos: `phone`, `name`, `stage`, `observacoes_sdr`, `followup_count`, `nicho`, `last_lead_msg_at`, `last_bot_msg_at`, `created_at`, `updated_at`.
+- `get_contact(phone)` usa `INSERT ... ON CONFLICT (phone) DO UPDATE` para upsert atomico. Index unico parcial em `phone WHERE phone IS NOT NULL`.
+- `update_contact(phone, **kwargs)` monta SET dinamico com parametros posicionais (`$1`, `$2`, ...). Sempre atualiza `updated_at = now()`.
+- `append_observation` concatena linha com timestamp `[HH:MM] texto` ao campo `observacoes_sdr`. Limita a 20 linhas historicas.
+- Stages validos: `"novo"`, `"qualificando"`, `"interesse"`, `"agendado"`, `"realizada"`, `"sem_interesse"`, `"perdido"`, `"bloqueado"`. Validar em `advance_stage` antes de gravar.
+- Acesso direto via asyncpg: nao usa supabase-py SDK (que requer schema exposure no PostgREST para schemas customizados).
 
 ---
 

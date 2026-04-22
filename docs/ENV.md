@@ -26,11 +26,13 @@ Acesso ao banco PostgreSQL com pgvector para persistencia de leads, historico e 
 
 | Variavel | Descricao | Obrigatoria | Exemplo | Onde obter |
 |---|---|---|---|---|
-| `SUPABASE_URL` | URL do projeto Supabase | Sim | `https://cfjyxdqrathzremxdkoi.supabase.co` | Supabase Dashboard > Project Settings > API > Project URL |
-| `SUPABASE_SERVICE_KEY` | Service role key (acesso total, sem RLS) | Sim | `eyJhbGci...` | Supabase Dashboard > Project Settings > API > service_role key |
-| `DATABASE_URL` | Connection string PostgreSQL direta (para migracao e scripts) | Opcional | `postgresql://postgres.cfjyxdqrathzremxdkoi:SENHA@aws-0-sa-east-1.pooler.supabase.com:6543/postgres` | Supabase Dashboard > Project Settings > Database > Connection String |
+| `SUPABASE_URL` | URL do projeto Supabase | Sim (RAG) | `https://cfjyxdqrathzremxdkoi.supabase.co` | Supabase Dashboard > Project Settings > API > Project URL |
+| `SUPABASE_SERVICE_KEY` | Service role key (acesso total, sem RLS) | Sim (RAG) | `eyJhbGci...` | Supabase Dashboard > Project Settings > API > service_role key |
+| `DATABASE_URL` | Connection string PostgreSQL direta via pooler (porta 6543) | **Obrigatoria** | `postgresql://postgres.cfjyxdqrathzremxdkoi:SENHA@aws-0-us-west-2.pooler.supabase.com:6543/postgres` | Supabase Dashboard > Project Settings > Database > Connection Pooling > Transaction mode |
 
-**Nota:** Use `SUPABASE_SERVICE_KEY` (nao a `anon key`) porque o agente precisa bypassar RLS para ler e escrever em qualquer linha. Nunca exponha essa key no frontend.
+**Nota sobre acesso ao schema `agente_vibe`:** O CRM (`tools/crm.py`) e o historico de chat (`memory/chat.py`) usam `asyncpg` com conexao direta via `DATABASE_URL`, pois o PostgREST do Supabase nao expoe schemas customizados sem configuracao adicional no dashboard. `SUPABASE_URL` e `SUPABASE_SERVICE_KEY` sao usados apenas pelo `rag_tool` (schema `public`).
+
+**Formato do DATABASE_URL para Supabase transaction pooler (porta 6543):** a senha deve estar URL-encoded (ex: `@` vira `%40`). Use o pooler em modo Transaction (porta 6543), nao Session (porta 5432), para compatibilidade com Railway.
 
 ---
 
