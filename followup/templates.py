@@ -8,12 +8,12 @@ logger = logging.getLogger(__name__)
 def _first_name(lead: dict) -> str:
     name = lead.get("name", "").strip()
     if not name:
-        return "Ola"
+        return "Olá"
     return name.split()[0]
 
 
 def _short_obs(lead: dict) -> str:
-    """Extrai primeira linha nao vazia das observacoes como resumo."""
+    """Extrai primeira linha não vazia das observações como resumo."""
     obs = lead.get("observacoes_sdr", "") or ""
     for line in obs.splitlines():
         clean = line.strip()
@@ -22,7 +22,7 @@ def _short_obs(lead: dict) -> str:
             clean = clean.split("]", 1)[-1].strip()
         if clean:
             return clean
-    return "sua situacao"
+    return "sua situação"
 
 
 def get_followup_message(lead: dict) -> str | None:
@@ -38,46 +38,46 @@ def get_followup_message(lead: dict) -> str | None:
     # Reagendamento: stage agendado sem show
     if count == 99:
         return (
-            f"{nome}, nao te vi na call com o Gastao. "
+            f"{nome}, não te vi na call com o Gastão. "
             "Aconteceu alguma coisa? Posso reagendar se quiser."
         )
 
     if count == 0:
         if has_nicho:
             return (
-                f"Oi {nome}, vi que voce trabalha com {nicho}. "
-                "Surgiu alguma duvida sobre como o agente funciona nesse segmento?"
+                f"Oi {nome}, vi que você trabalha com {nicho}. "
+                "Surgiu alguma dúvida sobre como o agente funciona nesse segmento?"
             )
-        return f"Oi {nome}, tudo bem? Ficou alguma duvida sobre o que conversamos?"
+        return f"Oi {nome}, tudo bem? Ficou alguma dúvida sobre o que conversamos?"
 
     if count == 1:
         if has_nicho:
             return (
-                f"{nome}, muita coisa no {nicho} pode ser automatizada sem complicar a operacao. "
+                f"{nome}, muita coisa no {nicho} pode ser automatizada sem complicar a operação. "
                 "Faz sentido a gente conversar 30 min?"
             )
-        return f"{nome}, ainda faz sentido entender como o agente funciona pro seu negocio?"
+        return f"{nome}, ainda faz sentido entender como o agente funciona pro seu negócio?"
 
     if count == 2:
         if has_long_obs:
             obs_resumo = _short_obs(lead)
             return (
-                f"{nome}, voce mencionou {obs_resumo}. "
-                "Se quiser entender como resolver isso, e so me falar."
+                f"{nome}, você mencionou {obs_resumo}. "
+                "Se quiser entender como resolver isso, é só me falar."
             )
         return (
-            f"{nome}, ultima tentativa de contato. "
-            "Se nao for o momento certo, sem problema. So me avisa e te tiro da lista."
+            f"{nome}, última tentativa de contato. "
+            "Se não for o momento certo, sem problema. Só me avisa e te tiro da lista."
         )
 
     if count == 3:
         return (
-            f"{nome}, entendo que voce pode estar ocupado. "
+            f"{nome}, entendo que você pode estar ocupado. "
             "Quando quiser retomar, estarei por aqui."
         )
 
     if count == 4:
-        return f"{nome}, ultima mensagem da minha parte. Sucesso no seu negocio!"
+        return f"{nome}, última mensagem da minha parte. Sucesso no seu negócio!"
 
     # count >= 5: nao enviar
     return None

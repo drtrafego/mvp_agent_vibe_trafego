@@ -38,83 +38,83 @@ DELAY_ENTRE_INSERTS = 0.3  # segundos, respeita rate limit do Gemini
 DOCUMENTOS: list[dict] = [
 
     # -----------------------------------------------------------------------
-    # PRODUTO / O QUE E O AGENTE 24 HORAS
+    # PRODUTO / O QUE É O AGENTE 24 HORAS
     # -----------------------------------------------------------------------
     {
         "categoria": "produto",
-        "titulo": "O que e o Agente 24 Horas",
-        "content": """O Agente 24 Horas e um atendente de IA treinado especificamente para o negocio do cliente.
+        "titulo": "O que é o Agente 24 Horas",
+        "content": """O Agente 24 Horas é um atendente de IA treinado especificamente para o negócio do cliente.
 Ele responde no WhatsApp em tempo real, 24 horas por dia, 7 dias por semana, sem precisar de humano.
-Entende audio, texto e contexto da conversa. Lembra de tudo que o cliente ja disse.
-Pode agendar, qualificar leads, responder duvidas, fazer follow-up automatico e avisar o dono quando algo precisa de atencao humana.
-Nao e um chatbot de respostas prontas. E um agente que raciocina, usa ferramentas e toma decisoes como um atendente treinado.
-A diferenca para um chatbot comum: o Agente 24 Horas entende contexto, nao so palavras-chave. Se o cliente perguntar algo fora do script, ele responde com inteligencia, nao trava.""",
+Entende áudio, texto e contexto da conversa. Lembra de tudo que o cliente já disse.
+Pode agendar, qualificar leads, responder dúvidas, fazer follow-up automático e avisar o dono quando algo precisa de atenção humana.
+Não é um chatbot de respostas prontas. É um agente que raciocina, usa ferramentas e toma decisões como um atendente treinado.
+A diferença para um chatbot comum: o Agente 24 Horas entende contexto, não só palavras-chave. Se o cliente perguntar algo fora do script, ele responde com inteligência, não trava.""",
     },
     {
         "categoria": "produto",
-        "titulo": "Como e entregue o Agente 24 Horas",
-        "content": """A entrega e feita em 3 etapas:
-1. Reuniao de onboarding: o Gastao mapeia o negocio, os principais fluxos de atendimento, objecoes mais comuns e o tom de voz da marca.
-2. Configuracao e treinamento: a equipe monta a base de conhecimento do agente com as informacoes do cliente, integra ao WhatsApp Business e ajusta o comportamento.
-3. Periodo de calibracao: nas primeiras 2 semanas, o cliente reporta ajustes e o agente e refinado ate estar perfeito.
+        "titulo": "Como é entregue o Agente 24 Horas",
+        "content": """A entrega é feita em 3 etapas:
+1. Reunião de onboarding: o Gastão mapeia o negócio, os principais fluxos de atendimento, objeções mais comuns e o tom de voz da marca.
+2. Configuração e treinamento: a equipe monta a base de conhecimento do agente com as informações do cliente, integra ao WhatsApp Business e ajusta o comportamento.
+3. Período de calibração: nas primeiras 2 semanas, o cliente reporta ajustes e o agente é refinado até estar perfeito.
 
-Prazo medio de entrega: 7 a 14 dias uteis apos o onboarding.
-O cliente nao precisa saber programar. A gestao e feita pela equipe DR.TRAFEGO.""",
+Prazo médio de entrega: 7 a 14 dias úteis após o onboarding.
+O cliente não precisa saber programar. A gestão é feita pela equipe DR.TRAFEGO.""",
     },
     {
         "categoria": "produto",
-        "titulo": "Integracoes disponiveis",
+        "titulo": "Integrações disponíveis",
         "content": """O Agente 24 Horas integra com:
 - WhatsApp Business API (Meta oficial)
-- Google Calendar (agendamento automatico)
+- Google Calendar (agendamento automático)
 - Google Sheets (registro de leads)
 - CRM via webhook (qualquer sistema com API)
 - Sistemas de agendamento: Calendly, AgendaPro, Doctoralia (sob consulta)
 - Instagram Direct (roadmap)
 
-Nao precisa trocar de sistema. O agente se conecta ao que o cliente ja usa.""",
+Não precisa trocar de sistema. O agente se conecta ao que o cliente já usa.""",
     },
     {
         "categoria": "produto",
-        "titulo": "Seguranca e LGPD",
-        "content": """O Agente 24 Horas e construido sobre infraestrutura segura:
+        "titulo": "Segurança e LGPD",
+        "content": """O Agente 24 Horas é construído sobre infraestrutura segura:
 - Dados armazenados em servidores certificados (Supabase, infra AWS us-east)
-- Nenhuma conversa e compartilhada com terceiros
-- Conformidade com LGPD: dados do cliente sao usados exclusivamente para operar o agente dele
-- Possibilidade de contrato de confidencialidade (NDA) para segmentos sensiveis (saude, juridico, financeiro)
-- O cliente pode solicitar exclusao de dados a qualquer momento
+- Nenhuma conversa é compartilhada com terceiros
+- Conformidade com LGPD: dados do cliente são usados exclusivamente para operar o agente dele
+- Possibilidade de contrato de confidencialidade (NDA) para segmentos sensíveis (saúde, jurídico, financeiro)
+- O cliente pode solicitar exclusão de dados a qualquer momento
 
-A IA nao toma decisoes financeiras nem envia dados bancarios. Toda transacao financeira e redirecionada para o humano.""",
+A IA não toma decisões financeiras nem envia dados bancários. Toda transação financeira é redirecionada para o humano.""",
     },
 
     # -----------------------------------------------------------------------
-    # PRECO E INVESTIMENTO
+    # PREÇO E INVESTIMENTO
     # -----------------------------------------------------------------------
     {
         "categoria": "preco",
-        "titulo": "Como responder sobre preco antes do valor estar construido",
-        "content": """Quando o lead perguntar preco antes de entender o valor, use a virada de preco:
-"Antes de falar em numero, deixa eu entender melhor o seu caso para garantir que faz sentido pra voce."
-Depois entregue o pedaco do queijo do nicho dele.
+        "titulo": "Como responder sobre preço antes do valor estar construído",
+        "content": """Quando o lead perguntar preço antes de entender o valor, use a virada de preço:
+"Antes de falar em número, deixa eu entender melhor o seu caso para garantir que faz sentido pra você."
+Depois entregue o pedaço do queijo do nicho dele.
 
 Se insistir muito, diga:
-"O investimento varia de acordo com o volume de atendimentos e as integracoes necessarias. O Gastao monta uma proposta customizada na call. O que posso te dizer e que clientes com volume similar ao seu costumam recuperar o investimento nos primeiros 60 dias so com os leads que paravam de responder fora do horario."
+"O investimento varia de acordo com o volume de atendimentos e as integrações necessárias. O Gastão monta uma proposta customizada na call. O que posso te dizer é que clientes com volume similar ao seu costumam recuperar o investimento nos primeiros 60 dias só com os leads que paravam de responder fora do horário."
 
-Nunca de numero sem contexto. Preco sem valor percebido e sempre caro.""",
+Nunca dê número sem contexto. Preço sem valor percebido é sempre caro.""",
     },
     {
         "categoria": "preco",
         "titulo": "Posicionamento de valor do Agente 24 Horas",
-        "content": """O Agente 24 Horas nao compete com funcionario. Compete com o custo de nao atender.
-Um funcionario de atendimento custa entre R$ 2.000 e R$ 4.000 por mes com encargos, so atende em horario comercial e tira ferias.
-O Agente 24 Horas atende as 3 da manha, nos fins de semana, no feriado e nao pede aumento.
+        "content": """O Agente 24 Horas não compete com funcionário. Compete com o custo de não atender.
+Um funcionário de atendimento custa entre R$ 2.000 e R$ 4.000 por mês com encargos, só atende em horário comercial e tira férias.
+O Agente 24 Horas atende às 3 da manhã, nos fins de semana, no feriado e não pede aumento.
 
-Calculo de ROI rapido para usar na conversa:
-- Se o negocio recebe 100 leads por mes e converte 20%, sao 20 vendas.
-- Se o agente recuperar apenas 10% dos leads que nao eram atendidos (outros 10 leads), com ticket medio de R$ 500, sao R$ 5.000 a mais por mes.
+Cálculo de ROI rápido para usar na conversa:
+- Se o negócio recebe 100 leads por mês e converte 20%, são 20 vendas.
+- Se o agente recuperar apenas 10% dos leads que não eram atendidos (outros 10 leads), com ticket médio de R$ 500, são R$ 5.000 a mais por mês.
 - O agente custa menos que isso.
 
-Use esse calculo adaptado ao nicho do lead.""",
+Use esse cálculo adaptado ao nicho do lead.""",
     },
 
     # -----------------------------------------------------------------------
@@ -122,250 +122,250 @@ Use esse calculo adaptado ao nicho do lead.""",
     # -----------------------------------------------------------------------
     {
         "categoria": "nicho_clinica",
-        "titulo": "Case: Clinicas e consultórios medicos",
-        "content": """Clinicas perdem entre 3 e 5 pacientes por semana que mandam mensagem fora do horario e nao recebem resposta.
-Esses pacientes nao ligam de volta. Vao para o concorrente.
+        "titulo": "Case: Clínicas e consultórios médicos",
+        "content": """Clínicas perdem entre 3 e 5 pacientes por semana que mandam mensagem fora do horário e não recebem resposta.
+Esses pacientes não ligam de volta. Vão para o concorrente.
 
-O Agente 24 Horas para clinicas:
-- Responde duvidas sobre procedimentos e planos aceitos a qualquer hora
-- Agenda consultas diretamente no Google Calendar ou sistema da clinica
-- Envia lembretes automaticos de consulta (reduz no-show em ate 40%)
-- Qualifica se o paciente tem plano ou paga particular antes de chegar na recepcao
-- Avisa a secretaria quando um caso precisa de atencao urgente
+O Agente 24 Horas para clínicas:
+- Responde dúvidas sobre procedimentos e planos aceitos a qualquer hora
+- Agenda consultas diretamente no Google Calendar ou sistema da clínica
+- Envia lembretes automáticos de consulta (reduz no-show em até 40%)
+- Qualifica se o paciente tem plano ou paga particular antes de chegar na recepção
+- Avisa a secretaria quando um caso precisa de atenção urgente
 
-Case real: clinica odontologica em Sao Paulo reduziu no-show de 35% para 12% em 60 dias com o agente enviando confirmacoes e lembretes automaticos.""",
+Case real: clínica odontológica em São Paulo reduziu no-show de 35% para 12% em 60 dias com o agente enviando confirmações e lembretes automáticos.""",
     },
     {
         "categoria": "nicho_imobiliaria",
-        "titulo": "Case: Imobiliarias e corretores",
-        "content": """40% dos leads de imobiliaria saem do anuncio e mandam mensagem fora do horario comercial.
-Se o corretor nao responder em menos de 5 minutos, a taxa de resposta cai 80%.
+        "titulo": "Case: Imobiliárias e corretores",
+        "content": """40% dos leads de imobiliária saem do anúncio e mandam mensagem fora do horário comercial.
+Se o corretor não responder em menos de 5 minutos, a taxa de resposta cai 80%.
 
-O Agente 24 Horas para imobiliarias:
-- Responde na hora, qualquer horario, sobre imoveis disponiveis
-- Qualifica o lead: tipo de imovel, bairro, faixa de preco, entrada disponivel, financiamento ou a vista
-- Agenda visitas diretamente no calendario do corretor
+O Agente 24 Horas para imobiliárias:
+- Responde na hora, qualquer horário, sobre imóveis disponíveis
+- Qualifica o lead: tipo de imóvel, bairro, faixa de preço, entrada disponível, financiamento ou à vista
+- Agenda visitas diretamente no calendário do corretor
 - Filtra os curiosos dos compradores reais antes de chegar no corretor
-- Envia fotos e informacoes do imovel automaticamente
+- Envia fotos e informações do imóvel automaticamente
 
-Case real: imobiliaria com 3 corretores triplicou o numero de visitas agendadas em 30 dias sem contratar mais corretores.""",
+Case real: imobiliária com 3 corretores triplicou o número de visitas agendadas em 30 dias sem contratar mais corretores.""",
     },
     {
         "categoria": "nicho_ecommerce",
         "titulo": "Case: E-commerce e lojas online",
-        "content": """E-commerces tem media de 70% de carrinhos abandonados. A maioria por duvida nao respondida.
-Custo de aquisicao de lead esta entre R$ 15 e R$ 80. Perder o lead por falta de atendimento e jogar dinheiro fora.
+        "content": """E-commerces têm média de 70% de carrinhos abandonados. A maioria por dúvida não respondida.
+Custo de aquisição de lead está entre R$ 15 e R$ 80. Perder o lead por falta de atendimento é jogar dinheiro fora.
 
 O Agente 24 Horas para e-commerce:
-- Responde duvidas sobre tamanho, prazo, frete e trocas em tempo real
+- Responde dúvidas sobre tamanho, prazo, frete e trocas em tempo real
 - Recupera carrinho abandonado com mensagem personalizada no WhatsApp
 - Envia status de pedido automaticamente
-- Lida com reclamacoes e solicitacoes de troca sem precisar do dono
-- Faz upsell e cross-sell baseado no historico de compra
+- Lida com reclamações e solicitações de troca sem precisar do dono
+- Faz upsell e cross-sell baseado no histórico de compra
 
-Case real: loja de moda feminina recuperou R$ 18.000 em carrinhos abandonados no primeiro mes com o agente.""",
+Case real: loja de moda feminina recuperou R$ 18.000 em carrinhos abandonados no primeiro mês com o agente.""",
     },
     {
         "categoria": "nicho_restaurante",
         "titulo": "Case: Restaurantes, bares e delivery",
-        "content": """Restaurantes perdem reservas todos os dias porque o telefone fica ocupado na hora do almoco.
-Delivery perde pedido porque o cliente desiste de esperar alguem responder.
+        "content": """Restaurantes perdem reservas todos os dias porque o telefone fica ocupado na hora do almoço.
+Delivery perde pedido porque o cliente desiste de esperar alguém responder.
 
 O Agente 24 Horas para restaurantes:
 - Recebe reservas de mesa pelo WhatsApp, qualquer hora
-- Responde sobre cardapio, opcoes sem gluten, sem lactose, veganismo
+- Responde sobre cardápio, opções sem glúten, sem lactose, veganismo
 - Gerencia lista de espera e avisa quando a mesa libera
 - Recebe pedidos de delivery e confirma tempo de entrega
-- Envia promocoes e cardapio do dia automaticamente
+- Envia promoções e cardápio do dia automaticamente
 
-Case real: restaurante japones em Florianopolis passou de 30 para 85 reservas por semana apos o agente, sem mudar o cardapio nem contratar garcom.""",
+Case real: restaurante japonês em Florianópolis passou de 30 para 85 reservas por semana após o agente, sem mudar o cardápio nem contratar garçom.""",
     },
     {
         "categoria": "nicho_salao",
-        "titulo": "Case: Saloes de beleza e estetica",
-        "content": """Saloes de beleza tem o telefone sempre ocupado. A profissional nao pode parar o atendimento para responder WhatsApp.
-Resultado: clientes vao pro concorrente que responde mais rapido.
+        "titulo": "Case: Salões de beleza e estética",
+        "content": """Salões de beleza têm o telefone sempre ocupado. A profissional não pode parar o atendimento para responder WhatsApp.
+Resultado: clientes vão pro concorrente que responde mais rápido.
 
-O Agente 24 Horas para saloes:
-- Agenda horarios automaticamente com base na disponibilidade real da agenda
-- Responde sobre servicos, precos e duracao
-- Envia confirmacao e lembrete 24h antes do horario
-- Avisa sobre lista de espera para horarios cheios
-- Faz follow-up com clientes que nao voltaram ha mais de 30 dias
+O Agente 24 Horas para salões:
+- Agenda horários automaticamente com base na disponibilidade real da agenda
+- Responde sobre serviços, preços e duração
+- Envia confirmação e lembrete 24h antes do horário
+- Avisa sobre lista de espera para horários cheios
+- Faz follow-up com clientes que não voltaram há mais de 30 dias
 
-Case real: salao de estetica em BH reduziu faltas de 8 por semana para 1 por semana com lembretes automaticos. Isso equivale a mais R$ 2.800 por mes recuperados.""",
+Case real: salão de estética em BH reduziu faltas de 8 por semana para 1 por semana com lembretes automáticos. Isso equivale a mais R$ 2.800 por mês recuperados.""",
     },
     {
         "categoria": "nicho_advocacia",
-        "titulo": "Case: Escritorios de advocacia",
-        "content": """Escritorios de advocacia perdem consultas iniciais porque o advogado nao pode responder mensagens enquanto esta em audiencia.
-Leads de advocacia sao urgentes: quem tem um problema juridico quer ajuda agora, nao amanha.
+        "titulo": "Case: Escritórios de advocacia",
+        "content": """Escritórios de advocacia perdem consultas iniciais porque o advogado não pode responder mensagens enquanto está em audiência.
+Leads de advocacia são urgentes: quem tem um problema jurídico quer ajuda agora, não amanhã.
 
 O Agente 24 Horas para advogados:
-- Faz triagem inicial: area do direito, tipo de caso, urgencia
-- Qualifica se o caso e da especialidade do escritorio
+- Faz triagem inicial: área do direito, tipo de caso, urgência
+- Qualifica se o caso é da especialidade do escritório
 - Agenda consulta inicial sem expor a agenda do advogado
-- Esclarece duvidas gerais sem dar conselho juridico
+- Esclarece dúvidas gerais sem dar conselho jurídico
 - Avisa o advogado imediatamente se chegar caso urgente (preso em flagrante, acidente, etc.)
 
-Case real: advogado trabalhista em Curitiba passou a receber 12 consultas agendadas por semana contra 4 antes do agente, sem mudar o investimento em anuncio.""",
+Case real: advogado trabalhista em Curitiba passou a receber 12 consultas agendadas por semana contra 4 antes do agente, sem mudar o investimento em anúncio.""",
     },
     {
         "categoria": "nicho_educacao",
         "titulo": "Case: Cursos, escolas e mentorias",
-        "content": """Infoprodutos e cursos tem pico de interesse no momento em que o lead ve o anuncio.
-Se nao responder em minutos, o interesse cai. O lead esquece.
+        "content": """Infoprodutos e cursos têm pico de interesse no momento em que o lead vê o anúncio.
+Se não responder em minutos, o interesse cai. O lead esquece.
 
-O Agente 24 Horas para educacao:
-- Responde duvidas sobre o curso, metodologia, duracao, certificado
-- Qualifica o perfil do aluno para entender se o produto e certo para ele
-- Envia link de pagamento ou leva para a pagina de venda no momento certo
-- Faz follow-up com quem nao fechou ainda
+O Agente 24 Horas para educação:
+- Responde dúvidas sobre o curso, metodologia, duração, certificado
+- Qualifica o perfil do aluno para entender se o produto é certo para ele
+- Envia link de pagamento ou leva para a página de venda no momento certo
+- Faz follow-up com quem não fechou ainda
 - Responde sobre prazo de acesso, suporte, comunidade
 
-Case real: mentoria de negocios com ticket de R$ 3.500 aumentou a taxa de fechamento de 8% para 23% em 45 dias ao responder leads no WhatsApp em menos de 1 minuto, qualquer hora.""",
+Case real: mentoria de negócios com ticket de R$ 3.500 aumentou a taxa de fechamento de 8% para 23% em 45 dias ao responder leads no WhatsApp em menos de 1 minuto, qualquer hora.""",
     },
     {
         "categoria": "nicho_clinica_vet",
-        "titulo": "Case: Clinicas veterinarias e petshops",
-        "content": """Donos de pet sao extremamente exigentes com tempo de resposta. Se o animal esta mal, eles querem resposta imediata.
-Clinicas que nao respondem rapido perdem para o concorrente que tem plantao.
+        "titulo": "Case: Clínicas veterinárias e petshops",
+        "content": """Donos de pet são extremamente exigentes com tempo de resposta. Se o animal está mal, eles querem resposta imediata.
+Clínicas que não respondem rápido perdem para o concorrente que tem plantão.
 
-O Agente 24 Horas para veterinarios:
-- Triagem de urgencia: o agente identifica se e caso de emergencia e indica protocolo
+O Agente 24 Horas para veterinários:
+- Triagem de urgência: o agente identifica se é caso de emergência e indica protocolo
 - Agendamento de consultas e banho e tosa automaticamente
-- Responde sobre vacinas, vermifugos, castracoes e precos
+- Responde sobre vacinas, vermífugos, castrações e preços
 - Envia lembretes de vacina e retorno
-- Avisa sobre promocoes de banho e tosa para fidelizacao
+- Avisa sobre promoções de banho e tosa para fidelização
 
-Case real: clinica vet em Goiania aumentou agendamentos em 60% em 2 meses apos o agente atender mensagens das 22h as 8h, horario em que a clinica estava fechada.""",
+Case real: clínica vet em Goiânia aumentou agendamentos em 60% em 2 meses após o agente atender mensagens das 22h às 8h, horário em que a clínica estava fechada.""",
     },
     {
         "categoria": "nicho_financeiro",
-        "titulo": "Case: Financeiras, correspondentes bancarios e seguradoras",
+        "titulo": "Case: Financeiras, correspondentes bancários e seguradoras",
         "content": """O mercado financeiro tem compliance rigoroso, mas a primeira resposta ao lead pode e deve ser automatizada.
-Leads de credito tem urgencia: precisam do dinheiro logo.
+Leads de crédito têm urgência: precisam do dinheiro logo.
 
 O Agente 24 Horas para financeiras:
-- Qualifica perfil de credito sem dar analise (pergunta renda, objetivo, urgencia)
+- Qualifica perfil de crédito sem dar análise (pergunta renda, objetivo, urgência)
 - Explica produtos de forma clara sem comprometer conformidade
-- Agenda ligacao com o consultor no horario certo
-- Faz follow-up com leads que pediram simulacao mas nao assinaram
-- Responde duvidas frequentes sobre documentacao
+- Agenda ligação com o consultor no horário certo
+- Faz follow-up com leads que pediram simulação mas não assinaram
+- Responde dúvidas frequentes sobre documentação
 
-Case real: correspondente bancario em Recife reduziu o tempo de resposta de leads de emprestimo de 4 horas para 40 segundos e dobrou a taxa de conversao para proposta em 30 dias.""",
+Case real: correspondente bancário em Recife reduziu o tempo de resposta de leads de empréstimo de 4 horas para 40 segundos e dobrou a taxa de conversão para proposta em 30 dias.""",
     },
 
     # -----------------------------------------------------------------------
-    # OBJECOES
+    # OBJEÇÕES
     # -----------------------------------------------------------------------
     {
         "categoria": "objecao",
-        "titulo": "Objecao: parece robo, nao tem a personalidade do meu negocio",
-        "content": """Quando o lead disser que parece robo ou que o cliente vai perceber que nao e humano, use:
-"Voce esta conversando comigo agora. Pareceu robo?"
-Se ele disser que nao: "E exatamente assim que o agente do seu negocio vai funcionar. Treinamos com o seu tom de voz, suas expressoes, seu jeito de atender."
+        "titulo": "Objeção: parece robô, não tem a personalidade do meu negócio",
+        "content": """Quando o lead disser que parece robô ou que o cliente vai perceber que não é humano, use:
+"Você está conversando comigo agora. Pareceu robô?"
+Se ele disser que não: "É exatamente assim que o agente do seu negócio vai funcionar. Treinamos com o seu tom de voz, suas expressões, seu jeito de atender."
 
-Argumento tecnico:
-O agente e treinado com exemplos reais do negocio. O cliente pode definir o nome, o genero, o tom (formal, descontraido, tecnico). O agente nao usa respostas genericas. Cada mensagem e gerada com base no contexto da conversa.
+Argumento técnico:
+O agente é treinado com exemplos reais do negócio. O cliente pode definir o nome, o gênero, o tom (formal, descontraído, técnico). O agente não usa respostas genéricas. Cada mensagem é gerada com base no contexto da conversa.
 
-Case de prova: clinica odontologica cujos pacientes nao sabiam que eram atendidos por IA por 3 meses. So descobriram quando a clinica divulgou.""",
+Case de prova: clínica odontológica cujos pacientes não sabiam que eram atendidos por IA por 3 meses. Só descobriram quando a clínica divulgou.""",
     },
     {
         "categoria": "objecao",
-        "titulo": "Objecao: ja tentei chatbot antes e nao funcionou",
-        "content": """Essa objecao e valida. A maioria dos chatbots anteriores eram fluxos de perguntas e respostas fixas.
-Use: "Faz sentido, a maioria dos chatbots que existia era uma arvore de opcoes. Se o cliente saisse do script, travava. O Agente 24 Horas e diferente porque usa IA generativa: ele entende o que o cliente escreveu, pensa e responde, nao segue um fluxo fixo. E a diferenca entre um mapa de GPS antigo e o Waze de hoje."
+        "titulo": "Objeção: já tentei chatbot antes e não funcionou",
+        "content": """Essa objeção é válida. A maioria dos chatbots anteriores eram fluxos de perguntas e respostas fixas.
+Use: "Faz sentido, a maioria dos chatbots que existia era uma árvore de opções. Se o cliente saísse do script, travava. O Agente 24 Horas é diferente porque usa IA generativa: ele entende o que o cliente escreveu, pensa e responde, não segue um fluxo fixo. É a diferença entre um mapa de GPS antigo e o Waze de hoje."
 
-Peca para ele descrever o que nao funcionou antes. Isso mostra que voce escuta e abre espaco para mostrar a diferenca concreta.""",
+Peça para ele descrever o que não funcionou antes. Isso mostra que você escuta e abre espaço para mostrar a diferença concreta.""",
     },
     {
         "categoria": "objecao",
-        "titulo": "Objecao: meu cliente nao gosta de falar com maquina",
+        "titulo": "Objeção: meu cliente não gosta de falar com máquina",
         "content": """Argumento direto:
-"A maioria dos clientes nao liga se quem respondeu e humano ou IA, desde que receba uma resposta rapida e util. O que irrita o cliente nao e a tecnologia, e esperar 4 horas para ouvir nao sei te dizer, aguarda."
+"A maioria dos clientes não liga se quem respondeu é humano ou IA, desde que receba uma resposta rápida e útil. O que irrita o cliente não é a tecnologia, é esperar 4 horas para ouvir não sei te dizer, aguarda."
 
-Dado de mercado: pesquisa da Zendesk mostra que 69% dos consumidores preferem resolver duvidas simples com autoatendimento a esperar por um humano.
+Dado de mercado: pesquisa da Zendesk mostra que 69% dos consumidores preferem resolver dúvidas simples com autoatendimento a esperar por um humano.
 
-Reforce: o agente nao substitui o humano para casos complexos. Ele resolve o simples para o humano focar no que importa.""",
+Reforce: o agente não substitui o humano para casos complexos. Ele resolve o simples para o humano focar no que importa.""",
     },
     {
         "categoria": "objecao",
-        "titulo": "Objecao: minha equipe ja da conta do atendimento",
-        "content": """Nao questione. Aprofunde:
+        "titulo": "Objeção: minha equipe já dá conta do atendimento",
+        "content": """Não questione. Aprofunde:
 "Que horas sua equipe para de responder?"
 "O que acontece com as mensagens que chegam depois das 18h ou no fim de semana?"
-"Quantas mensagens ficam sem resposta por dia em media?"
+"Quantas mensagens ficam sem resposta por dia em média?"
 
-Se a equipe realmente da conta, o agente libera eles para tarefas de maior valor. Nenhum atendente humano quer responder a mesma pergunta sobre preco 40 vezes por dia.
+Se a equipe realmente dá conta, o agente libera eles para tarefas de maior valor. Nenhum atendente humano quer responder a mesma pergunta sobre preço 40 vezes por dia.
 
-Reposicione: o agente nao e concorrente da equipe. E o primeiro atendimento que qualifica e organiza para a equipe trabalhar melhor.""",
+Reposicione: o agente não é concorrente da equipe. É o primeiro atendimento que qualifica e organiza para a equipe trabalhar melhor.""",
     },
     {
         "categoria": "objecao",
-        "titulo": "Objecao: nao tenho dinheiro agora, momento ruim",
-        "content": """Nao force. Acolha:
+        "titulo": "Objeção: não tenho dinheiro agora, momento ruim",
+        "content": """Não force. Acolha:
 "Entendo. Qual seria o momento ideal?"
 Dependendo da resposta:
 - Se for 1 ou 2 meses: mantenha o lead no CRM, agende follow-up.
-- Se for vago: "O que eu posso te dizer e que a maioria dos clientes que adiou por causa do momento acabou falando que perdeu receita que pagaria o investimento varias vezes. Mas a decisao e sua e precisa fazer sentido pra voce."
+- Se for vago: "O que eu posso te dizer é que a maioria dos clientes que adiou por causa do momento acabou falando que perdeu receita que pagaria o investimento várias vezes. Mas a decisão é sua e precisa fazer sentido pra você."
 
-Nunca desconte nem desvalorize. Nao reduza preco no WhatsApp.""",
+Nunca desconte nem desvalorize. Não reduza preço no WhatsApp.""",
     },
     {
         "categoria": "objecao",
-        "titulo": "Objecao: LGPD, seguranca dos dados dos meus clientes",
+        "titulo": "Objeção: LGPD, segurança dos dados dos meus clientes",
         "content": """Resposta direta:
-"Questao totalmente valida, especialmente para quem lida com saude ou dados sensiveis."
+"Questão totalmente válida, especialmente para quem lida com saúde ou dados sensíveis."
 
 Argumentos:
-- Os dados ficam no servidor do proprio cliente (Supabase dedicado por conta, nao compartilhado)
-- Nao vendemos nem compartilhamos dados com terceiros
-- Voce pode assinar um DPA (Data Processing Agreement) conosco
-- O agente nao armazena dados bancarios nem de saude sensiveis, apenas o historico de conversa
+- Os dados ficam no servidor do próprio cliente (Supabase dedicado por conta, não compartilhado)
+- Não vendemos nem compartilhamos dados com terceiros
+- Você pode assinar um DPA (Data Processing Agreement) conosco
+- O agente não armazena dados bancários nem de saúde sensíveis, apenas o histórico de conversa
 
-Se o lead for da area medica ou juridica, oferecer NDA e contrato especifico.""",
+Se o lead for da área médica ou jurídica, oferecer NDA e contrato específico.""",
     },
     {
         "categoria": "objecao",
-        "titulo": "Objecao: preciso pensar, vou falar com meu socio",
-        "content": """Nao pressione. Qualifique:
-"Claro. O que voce precisaria ver ou entender melhor antes de levar pro seu socio?"
-Isso revela a objecao real.
+        "titulo": "Objeção: preciso pensar, vou falar com meu sócio",
+        "content": """Não pressione. Qualifique:
+"Claro. O que você precisaria ver ou entender melhor antes de levar pro seu sócio?"
+Isso revela a objeção real.
 
-Se a objecao real vier, use o argumento correto.
-Se nao vier nada concreto, pergunte: "O que faria voce sentir seguro o suficiente para tomar essa decisao?"
+Se a objeção real vier, use o argumento correto.
+Se não vier nada concreto, pergunte: "O que faria você sentir seguro o suficiente para tomar essa decisão?"
 
-Ao encerrar: "Quando voce acha que a gente consegue conversar de novo? Posso reservar um horario com o Gastao para voce e seu socio juntos se fizer sentido." """ ,
+Ao encerrar: "Quando você acha que a gente consegue conversar de novo? Posso reservar um horário com o Gastão para você e seu sócio juntos se fizer sentido." """ ,
     },
 
     # -----------------------------------------------------------------------
-    # DIFERENCIAIS E COMPARACOES
+    # DIFERENCIAIS E COMPARAÇÕES
     # -----------------------------------------------------------------------
     {
         "categoria": "diferencial",
-        "titulo": "Por que o Agente 24 Horas e diferente de ChatGPT ou qualquer IA generica",
-        "content": """ChatGPT e uma IA generica. Nao sabe nada sobre o negocio do cliente.
-O Agente 24 Horas e uma IA especialista no negocio especifico do cliente.
+        "titulo": "Por que o Agente 24 Horas é diferente de ChatGPT ou qualquer IA genérica",
+        "content": """ChatGPT é uma IA genérica. Não sabe nada sobre o negócio do cliente.
+O Agente 24 Horas é uma IA especialista no negócio específico do cliente.
 
-Diferenca pratica:
-- ChatGPT inventaria uma resposta sobre preco de procedimento. O Agente 24 Horas busca na base de conhecimento real e responde com o preco correto.
-- ChatGPT nao tem acesso a agenda. O Agente 24 Horas agenda diretamente.
-- ChatGPT nao lembra da conversa de ontem. O Agente 24 Horas lembra de tudo.
-- ChatGPT nao avisa o dono. O Agente 24 Horas notifica quando precisa de atencao humana.
+Diferença prática:
+- ChatGPT inventaria uma resposta sobre preço de procedimento. O Agente 24 Horas busca na base de conhecimento real e responde com o preço correto.
+- ChatGPT não tem acesso à agenda. O Agente 24 Horas agenda diretamente.
+- ChatGPT não lembra da conversa de ontem. O Agente 24 Horas lembra de tudo.
+- ChatGPT não avisa o dono. O Agente 24 Horas notifica quando precisa de atenção humana.
 
-E a diferenca entre um medico generalista e um especialista no seu caso.""",
+É a diferença entre um médico generalista e um especialista no seu caso.""",
     },
     {
         "categoria": "diferencial",
         "titulo": "Diferenciais da DR.TRAFEGO frente a concorrentes",
-        "content": """O mercado de agentes de IA para pequenas empresas esta crescendo. Por que a DR.TRAFEGO?
+        "content": """O mercado de agentes de IA para pequenas empresas está crescendo. Por que a DR.TRAFEGO?
 
-1. Especialidade em trafego pago: entendemos de onde vem o lead antes de atende-lo. O agente e calibrado para o perfil do lead que vem de anuncio, nao de indicacao.
-2. Treinamento com dados reais: usamos conversas reais do negocio do cliente, nao templates genericos.
-3. Suporte humano real: o Gastao acompanha pessoalmente o periodo de calibracao.
-4. Resultado mensuravel: entregamos relatorio de conversas, leads qualificados, agendamentos realizados e taxa de resposta.
-5. Sem contrato de fidelidade: o cliente fica porque funciona, nao por multa.""",
+1. Especialidade em tráfego pago: entendemos de onde vem o lead antes de atendê-lo. O agente é calibrado para o perfil do lead que vem de anúncio, não de indicação.
+2. Treinamento com dados reais: usamos conversas reais do negócio do cliente, não templates genéricos.
+3. Suporte humano real: o Gastão acompanha pessoalmente o período de calibração.
+4. Resultado mensurável: entregamos relatório de conversas, leads qualificados, agendamentos realizados e taxa de resposta.
+5. Sem contrato de fidelidade: o cliente fica porque funciona, não por multa.""",
     },
 ]
 

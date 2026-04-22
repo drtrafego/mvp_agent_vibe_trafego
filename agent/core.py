@@ -221,7 +221,7 @@ TOOLS: list[ToolDefinition] = [
 # Executor de tools
 # ---------------------------------------------------------------------------
 
-_FALLBACK_TOOL = "Ferramenta indisponivel no momento."
+_FALLBACK_TOOL = "Ferramenta indisponível no momento."
 
 
 async def execute_tool(name: str, args: dict, phone: str) -> str:
@@ -239,7 +239,7 @@ async def execute_tool(name: str, args: dict, phone: str) -> str:
         if name == "save_observation":
             from tools.crm import append_observation
             await append_observation(phone, args["observation"])
-            return "Observacao salva."
+            return "Observação salva."
 
         if name == "get_calendar_slots":
             from tools.calendar import get_available_slots
@@ -258,11 +258,11 @@ async def execute_tool(name: str, args: dict, phone: str) -> str:
             return f"Evento criado: {event.get('htmlLink', 'sem link')}"
 
         logger.warning("execute_tool: tool desconhecida '%s'", name)
-        return f"Tool {name} nao encontrada."
+        return f"Tool {name} não encontrada."
 
     except KeyError as exc:
         logger.error("execute_tool '%s': argumento faltando: %s", name, exc)
-        return f"Erro: argumento obrigatorio ausente ({exc})."
+        return f"Erro: argumento obrigatório ausente ({exc})."
     except Exception as exc:
         logger.error("execute_tool '%s' erro: %s", name, exc, exc_info=True)
         return _FALLBACK_TOOL
@@ -324,4 +324,4 @@ async def process_message(phone: str, text: str) -> str:
 
     # Fallback apos esgotar iteracoes
     logger.error("process_message: limite de %d iteracoes atingido para %s", _MAX_ITERATIONS, phone)
-    return "Deixa eu verificar isso e ja te respondo."
+    return "Deixa eu verificar isso e já te respondo."
