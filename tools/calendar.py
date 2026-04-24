@@ -98,9 +98,9 @@ def _create_event_sync(name: str, email: str, iso_datetime: str, title: str) -> 
 
     event_body = {
         "summary": title,
+        "description": f"Lead: {name}\nEmail: {email}\n\nConvide o lead manualmente neste evento.",
         "start": {"dateTime": start.isoformat(), "timeZone": "America/Sao_Paulo"},
         "end": {"dateTime": end.isoformat(), "timeZone": "America/Sao_Paulo"},
-        "attendees": [{"email": email, "displayName": name}],
     }
 
     created = (
@@ -108,7 +108,6 @@ def _create_event_sync(name: str, email: str, iso_datetime: str, title: str) -> 
         .insert(
             calendarId=settings.GOOGLE_CALENDAR_ID,
             body=event_body,
-            sendUpdates="all",
         )
         .execute()
     )
