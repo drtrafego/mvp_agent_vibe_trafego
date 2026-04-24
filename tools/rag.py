@@ -1,11 +1,15 @@
 import logging
+
+from google import genai
+from google.genai import types
 from supabase import create_client, Client
-import google.generativeai as genai
+
 from config.settings import settings
 
 logger = logging.getLogger(__name__)
 
 _supabase: Client | None = None
+_genai_client: genai.Client | None = None
 
 
 def _get_supabase() -> Client:
@@ -15,17 +19,22 @@ def _get_supabase() -> Client:
     return _supabase
 
 
+def _get_genai() -> genai.Client:
+    global _genai_client
+    if _genai_client is None:
+        _genai_client = genai.Client(api_key=settings.GOOGLE_API_KEY)
+    return _genai_client
+
+
 async def search_knowledge(query: str, top_k: int = 4) -> str:
     """Busca documentos relevantes na base RAG. Retorna conteudo concatenado."""
     try:
-        genai.configure(api_key=settings.GOOGLE_API_KEY)
-
-        embed_result = genai.embed_content(
-            model="models/embedding-001",
-            content=query,
-            task_type="RETRIEVAL_QUERY",
+        embed_result = await _get_genai().aio.models.embed_content(
+            model="text-embedding-004",
+            contents=query,
+            config=types.EmbedContentConfig(task_type="RETRIEVAL_QUERY"),
         )
-        embedding_vector: list[float] = embed_result["embedding"]
+        embedding_vector: list[float] = embed_result.embeddings[0].values
 
         supabase = _get_supabase()
 
