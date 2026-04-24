@@ -75,6 +75,7 @@ def _verify_signature(secret: str, body: bytes, signature_header: str) -> bool:
     return hmac.compare_digest(computed, received_hex)
 
 
+@router.get("/api/whatsapp/webhook", response_class=PlainTextResponse)
 @router.get("/webhook", response_class=PlainTextResponse)
 async def webhook_verify(
     request: Request,
@@ -103,6 +104,7 @@ async def webhook_verify(
     raise HTTPException(status_code=403, detail="Forbidden")
 
 
+@router.post("/api/whatsapp/webhook")
 @router.post("/webhook")
 async def webhook_receive(request: Request, background_tasks: BackgroundTasks) -> PlainTextResponse:
     """
