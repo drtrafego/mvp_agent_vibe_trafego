@@ -56,11 +56,11 @@ class Settings(BaseSettings):
         if self.LLM_MODEL:
             return self.LLM_MODEL
         defaults = {
-            "gemini": "gemini-2.0-flash",
+            "gemini": "gemini-2.5-flash",
             "anthropic": "claude-sonnet-4-6",
             "openai": "gpt-4o-mini",
         }
-        return defaults.get(self.LLM_PROVIDER, "gemini-2.0-flash")
+        return defaults.get(self.LLM_PROVIDER, "gemini-2.5-flash")
 
 
 settings = Settings()

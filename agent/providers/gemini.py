@@ -1,16 +1,18 @@
 """
 agent/providers/gemini.py
 
-Provider Gemini via google-generativeai.
-Modelo default: gemini-2.0-flash
+Provider Gemini via google-genai (SDK novo).
+Modelo default: gemini-2.5-flash
+
+Thinking desabilitado (thinking_budget=0) para simplificar: sem thought_signature,
+nosso histórico pode serializar/deserializar tool calls como strings sem perder estado.
 """
 
-import json
 import logging
 from typing import Any
 
-import google.generativeai as genai
-from google.generativeai import protos
+from google import genai
+from google.genai import types
 
 from .base import LLMProvider, LLMResponse, ToolCall, ToolDefinition
 
@@ -19,95 +21,93 @@ logger = logging.getLogger(__name__)
 _FALLBACK = "Oi! Tive uma instabilidade aqui. Pode repetir sua mensagem?"
 
 
-def _tool_def_to_genai(tool: ToolDefinition) -> protos.Tool:
-    """Converte ToolDefinition para protos.Tool do Gemini."""
-    props = tool.parameters.get("properties", {})
-    required = tool.parameters.get("required", [])
+def _json_schema_to_gemini(schema: dict) -> types.Schema:
+    type_map = {
+        "string": types.Type.STRING,
+        "number": types.Type.NUMBER,
+        "integer": types.Type.INTEGER,
+        "boolean": types.Type.BOOLEAN,
+        "array": types.Type.ARRAY,
+        "object": types.Type.OBJECT,
+    }
 
-    genai_props: dict[str, protos.Schema] = {}
-    for prop_name, prop_schema in props.items():
-        prop_type = prop_schema.get("type", "string").upper()
-        type_map = {
-            "STRING": protos.Type.STRING,
-            "NUMBER": protos.Type.NUMBER,
-            "INTEGER": protos.Type.INTEGER,
-            "BOOLEAN": protos.Type.BOOLEAN,
-            "ARRAY": protos.Type.ARRAY,
-            "OBJECT": protos.Type.OBJECT,
-        }
-        genai_props[prop_name] = protos.Schema(
-            type=type_map.get(prop_type, protos.Type.STRING),
-            description=prop_schema.get("description", ""),
+    if schema.get("type") == "object":
+        props = {}
+        for name, prop in schema.get("properties", {}).items():
+            props[name] = types.Schema(
+                type=type_map.get(prop.get("type", "string"), types.Type.STRING),
+                description=prop.get("description", ""),
+            )
+        return types.Schema(
+            type=types.Type.OBJECT,
+            properties=props or None,
+            required=schema.get("required", []) or None,
         )
 
-    fn_decl = protos.FunctionDeclaration(
+    return types.Schema(
+        type=type_map.get(schema.get("type", "string"), types.Type.STRING),
+        description=schema.get("description", ""),
+    )
+
+
+def _tool_def_to_gemini(tool: ToolDefinition) -> types.Tool:
+    fn_decl = types.FunctionDeclaration(
         name=tool.name,
         description=tool.description,
-        parameters=protos.Schema(
-            type=protos.Type.OBJECT,
-            properties=genai_props,
-            required=required,
-        ) if genai_props else None,
+        parameters=_json_schema_to_gemini(tool.parameters) if tool.parameters.get("properties") else None,
     )
-    return protos.Tool(function_declarations=[fn_decl])
+    return types.Tool(function_declarations=[fn_decl])
 
 
-def _messages_to_contents(messages: list[dict]) -> list[protos.Content]:
+def _messages_to_contents(messages: list[dict]) -> list[types.Content]:
     """
     Converte lista [{role, content, tool_calls?, ...}] para Contents do Gemini.
-
-    Mapeamento de roles:
       user       -> user
       assistant  -> model
       tool       -> user (com FunctionResponse)
     """
-    contents: list[protos.Content] = []
+    contents: list[types.Content] = []
 
     for msg in messages:
         role = msg.get("role", "user")
 
-        # Mensagem de resultado de tool (gerada por tool_result_message)
         if role == "tool":
-            tool_name = msg.get("name", "")
-            tool_content = msg.get("content", "")
-            fn_resp = protos.FunctionResponse(
-                name=tool_name,
-                response={"result": tool_content},
+            fn_resp = types.Part.from_function_response(
+                name=msg.get("name", ""),
+                response={"result": msg.get("content", "")},
             )
-            contents.append(
-                protos.Content(role="user", parts=[protos.Part(function_response=fn_resp)])
-            )
+            contents.append(types.Content(role="user", parts=[fn_resp]))
             continue
 
-        # Mensagem do assistant com tool_calls pendentes
         if role == "assistant" and msg.get("tool_calls"):
-            parts: list[protos.Part] = []
+            parts: list[types.Part] = []
             if msg.get("content"):
-                parts.append(protos.Part(text=msg["content"]))
+                parts.append(types.Part.from_text(text=msg["content"]))
             for tc in msg["tool_calls"]:
                 parts.append(
-                    protos.Part(
-                        function_call=protos.FunctionCall(
+                    types.Part(
+                        function_call=types.FunctionCall(
                             name=tc.name,
                             args=tc.arguments,
                         )
                     )
                 )
-            contents.append(protos.Content(role="model", parts=parts))
+            contents.append(types.Content(role="model", parts=parts))
             continue
 
-        # Mensagem normal
         gemini_role = "model" if role == "assistant" else "user"
         text = msg.get("content", "") or ""
-        contents.append(protos.Content(role=gemini_role, parts=[protos.Part(text=text)]))
+        contents.append(
+            types.Content(role=gemini_role, parts=[types.Part.from_text(text=text)])
+        )
 
     return contents
 
 
 class GeminiProvider(LLMProvider):
-    def __init__(self, api_key: str, model: str = "gemini-2.0-flash") -> None:
-        genai.configure(api_key=api_key)
-        self._model_name = model or "gemini-2.0-flash"
+    def __init__(self, api_key: str, model: str = "gemini-2.5-flash") -> None:
+        self._client = genai.Client(api_key=api_key)
+        self._model_name = model or "gemini-2.5-flash"
 
     async def generate(
         self,
@@ -116,25 +116,23 @@ class GeminiProvider(LLMProvider):
         tools: list[ToolDefinition],
     ) -> LLMResponse:
         try:
-            genai_tools = [_tool_def_to_genai(t) for t in tools] if tools else None
-
-            model = genai.GenerativeModel(
-                model_name=self._model_name,
-                system_instruction=system,
-                tools=genai_tools,
-            )
-
+            gemini_tools = [_tool_def_to_gemini(t) for t in tools] if tools else None
             contents = _messages_to_contents(messages)
 
-            response = await model.generate_content_async(
-                contents,
-                generation_config=genai.GenerationConfig(
-                    temperature=0.7,
-                    max_output_tokens=1024,
-                ),
+            config = types.GenerateContentConfig(
+                system_instruction=system,
+                temperature=0.7,
+                max_output_tokens=1024,
+                tools=gemini_tools,
+                thinking_config=types.ThinkingConfig(thinking_budget=0),
             )
 
-            # Verifica se a resposta esta vazia (finish_reason STOP com zero tokens)
+            response = await self._client.aio.models.generate_content(
+                model=self._model_name,
+                contents=contents,
+                config=config,
+            )
+
             if not response.candidates:
                 logger.warning("gemini: sem candidates na resposta")
                 return LLMResponse(content=_FALLBACK, finish_reason="error")
@@ -142,16 +140,15 @@ class GeminiProvider(LLMProvider):
             candidate = response.candidates[0]
             finish = candidate.finish_reason
 
-            # Extrai tool calls se houver
             tool_calls: list[ToolCall] = []
             text_parts: list[str] = []
 
-            for part in candidate.content.parts:
+            for part in candidate.content.parts or []:
+                if getattr(part, "thought", False):
+                    continue
                 if part.function_call and part.function_call.name:
                     fc = part.function_call
-                    # args e um MapComposite; converte para dict nativo
                     args = dict(fc.args) if fc.args else {}
-                    # id sintetico: gemini nao retorna id de tool call
                     tc_id = f"gemini_{fc.name}_{len(tool_calls)}"
                     tool_calls.append(ToolCall(id=tc_id, name=fc.name, arguments=args))
                 elif part.text:
@@ -166,7 +163,6 @@ class GeminiProvider(LLMProvider):
                     finish_reason="tool_use",
                 )
 
-            # Trata output vazio sem tool calls
             if not text:
                 logger.warning("gemini: finish_reason=%s mas texto vazio", finish)
                 return LLMResponse(content=_FALLBACK, finish_reason="error")
@@ -178,10 +174,6 @@ class GeminiProvider(LLMProvider):
             return LLMResponse(content=_FALLBACK, finish_reason="error")
 
     def tool_result_message(self, tool_call_id: str, name: str, content: str) -> dict:
-        """
-        Gemini espera FunctionResponse dentro de Content role=user.
-        Retorna dict com marcador para _messages_to_contents reconhecer.
-        """
         return {
             "role": "tool",
             "tool_call_id": tool_call_id,

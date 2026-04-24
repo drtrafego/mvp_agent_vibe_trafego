@@ -47,7 +47,10 @@ async def lifespan(app: FastAPI):
         settings.llm_model_resolved,
     )
 
-    await create_table_if_not_exists()
+    try:
+        await create_table_if_not_exists()
+    except Exception as exc:
+        logger.error("Erro ao verificar tabela chat_sessions: %s", exc)
 
     logger.info("Agente pronto (modo serverless)")
 
