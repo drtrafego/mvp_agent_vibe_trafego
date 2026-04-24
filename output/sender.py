@@ -173,9 +173,10 @@ async def _post_single(client: httpx.AsyncClient, phone: str, text: str) -> bool
             response = await client.post(url, json=payload, headers=headers)
             if response.status_code == 200:
                 logger.info(
-                    "meta-send ok: phone=%s tentativa=%d",
+                    "meta-send ok: phone=%s tentativa=%d text=%r",
                     phone,
                     attempt,
+                    text[:200],
                 )
                 return True
 
