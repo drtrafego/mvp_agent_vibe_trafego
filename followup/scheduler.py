@@ -25,7 +25,7 @@ _supabase: Client | None = None
 
 # Delay por contagem de follow-up (count -> horas após last_lead_msg_at)
 FU_DELAYS_HOURS = {
-    0: 4,   # FU0: 4h após primeira mensagem do lead
+    0: 1,   # FU0: 60 min após última msg do lead
     1: 24,  # FU1: 24h
     2: 48,  # FU2: 48h
     3: 60,  # FU3: 60h
