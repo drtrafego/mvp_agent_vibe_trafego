@@ -13,13 +13,15 @@ async def notify_appointment(event: dict) -> None:
         summary = event.get("summary", "Sem titulo")
         start = event.get("start", "")
         email = event.get("email", "")
+        name = event.get("name", "")
         html_link = event.get("htmlLink", "")
 
         body_text = (
             f"Novo agendamento!\n"
             f"{summary}\n"
-            f"{start}\n"
-            f"Lead: {email}\n"
+            f"Quando: {start}\n"
+            f"Lead: {name}\n"
+            f"Email: {email}\n"
             f"{html_link}"
         )
 

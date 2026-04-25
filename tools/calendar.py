@@ -108,6 +108,13 @@ def _create_event_sync(name: str, email: str, iso_datetime: str, title: str) -> 
         "start": {"dateTime": start.isoformat(), "timeZone": "America/Sao_Paulo"},
         "end": {"dateTime": end.isoformat(), "timeZone": "America/Sao_Paulo"},
         "attendees": [{"email": email, "displayName": name}],
+        "reminders": {
+            "useDefault": False,
+            "overrides": [
+                {"method": "email", "minutes": 60},
+                {"method": "popup", "minutes": 15},
+            ],
+        },
     }
 
     created = (
@@ -125,6 +132,8 @@ def _create_event_sync(name: str, email: str, iso_datetime: str, title: str) -> 
         "id": created.get("id", ""),
         "summary": created.get("summary", title),
         "start": created.get("start", {}).get("dateTime", iso_datetime),
+        "email": email,
+        "name": name,
     }
 
 
