@@ -23,10 +23,10 @@ scheduler = AsyncIOScheduler()
 
 _supabase: Client | None = None
 
-# Delay por contagem de follow-up (count -> horas após last_lead_msg_at)
+# Delay por contagem de follow-up (count -> horas após última msg do lead)
 FU_DELAYS_HOURS = {
-    0: 1,   # FU0: 60 min após última msg do lead
-    1: 24,  # FU1: 24h
+    0: 1,   # FU0: 60 min
+    1: 4,   # FU1: 4h
     2: 48,  # FU2: 48h
     3: 60,  # FU3: 60h
     4: 72,  # FU4: 72h (última)
