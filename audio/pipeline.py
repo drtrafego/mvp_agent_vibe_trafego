@@ -1,13 +1,10 @@
 """Transcricao de audio via api.transcrever.casaldotrafego.com (Whisper local).
 
-Fluxo:
+Fluxo (sincrono, rapido ~5-15s):
 1. Baixa audio da Meta API
-2. Upload para api.transcrever via /videos/upload
-3. Cria job via POST /jobs
-4. Polling /jobs/{id} ate status=completed
-5. Busca texto em /transcricoes/{output_path}
+2. Upload para api.transcrever via /videos/upload (salva em /opt/transcrever/videos/)
+3. POST /transcribe com video_path absoluto -> retorna texto direto
 """
-import asyncio
 import logging
 
 import httpx
@@ -18,8 +15,8 @@ logger = logging.getLogger(__name__)
 
 META_MEDIA_URL = "https://graph.facebook.com/v21.0/{media_id}"
 TRANSCRIBE_BASE = "https://api.transcrever.casaldotrafego.com"
-POLL_INTERVAL_S = 3
-POLL_TIMEOUT_S = 300  # 5 min max (Whisper pode demorar em audios longos)
+TRANSCRIBE_VIDEOS_PATH = "/opt/transcrever/videos"  # path interno do servidor
+TRANSCRIBE_TIMEOUT_S = 180  # max 3 min para audios longos
 FALLBACK = "[Audio nao pode ser transcrito. O lead enviou um audio.]"
 
 
@@ -53,7 +50,7 @@ async def transcribe_audio(media_id: str) -> str:
         suffix = ".ogg" if "ogg" in mime_type else ".mp4"
         filename = f"meta_{media_id[:30]}{suffix}"
 
-        async with httpx.AsyncClient(timeout=POLL_TIMEOUT_S + 30) as client:
+        async with httpx.AsyncClient(timeout=TRANSCRIBE_TIMEOUT_S + 30) as client:
             # 1. Upload
             files = {"file": (filename, audio_bytes, mime_type)}
             up = await client.post(f"{TRANSCRIBE_BASE}/videos/upload", files=files)
@@ -61,46 +58,24 @@ async def transcribe_audio(media_id: str) -> str:
             uploaded_filename = up.json().get("filename", filename)
             logger.info("Audio uploaded: %s", uploaded_filename)
 
-            # 2. Cria job
-            job_resp = await client.post(
-                f"{TRANSCRIBE_BASE}/jobs",
-                json={"files": [uploaded_filename], "language": "pt"},
+            # 2. Transcrever direto (sincrono, ~5-15s)
+            video_path = f"{TRANSCRIBE_VIDEOS_PATH}/{uploaded_filename}"
+            tr = await client.post(
+                f"{TRANSCRIBE_BASE}/transcribe",
+                json={"video_path": video_path, "language": "pt"},
+                timeout=TRANSCRIBE_TIMEOUT_S,
             )
-            job_resp.raise_for_status()
-            jobs = job_resp.json().get("jobs", [])
-            if not jobs:
-                logger.error("Sem jobs criados: %s", job_resp.text[:200])
+            tr.raise_for_status()
+            data = tr.json()
+            if data.get("status") != "success":
+                logger.error("Transcricao falhou: %s", data)
                 return FALLBACK
-            job_id = jobs[0]["job_id"]
-            logger.info("Transcribe job criado: %s", job_id)
-
-            # 3. Polling
-            elapsed = 0
-            while elapsed < POLL_TIMEOUT_S:
-                await asyncio.sleep(POLL_INTERVAL_S)
-                elapsed += POLL_INTERVAL_S
-                st = await client.get(f"{TRANSCRIBE_BASE}/jobs/{job_id}")
-                st.raise_for_status()
-                data = st.json()
-                status = data.get("status", "")
-                if status == "completed":
-                    output_path = data.get("output_path", "")
-                    if not output_path:
-                        logger.warning("Job completed sem output_path: %s", data)
-                        return FALLBACK
-                    # 4. Buscar texto
-                    text_resp = await client.get(f"{TRANSCRIBE_BASE}/transcricoes/{output_path}")
-                    text_resp.raise_for_status()
-                    transcript = text_resp.text.strip()
-                    logger.info("Audio transcrito: media_id=%s chars=%d", media_id, len(transcript))
-                    return transcript or FALLBACK
-                if status == "error":
-                    logger.error("Job erro: %s", data.get("error", "unknown"))
-                    return FALLBACK
-                # Continua polling se queued/processing
-
-            logger.warning("Audio timeout após %ds: media_id=%s", POLL_TIMEOUT_S, media_id)
-            return FALLBACK
+            transcript = (data.get("text") or "").strip()
+            if not transcript:
+                logger.warning("Transcricao vazia: media_id=%s", media_id)
+                return FALLBACK
+            logger.info("Audio transcrito: media_id=%s chars=%d", media_id, len(transcript))
+            return transcript
 
     except Exception as exc:
         logger.error("Erro ao transcrever audio media_id=%s: %s", media_id, exc)
