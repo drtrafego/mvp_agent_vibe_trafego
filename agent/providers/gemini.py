@@ -122,7 +122,7 @@ class GeminiProvider(LLMProvider):
             config = types.GenerateContentConfig(
                 system_instruction=system,
                 temperature=0.7,
-                max_output_tokens=1024,
+                max_output_tokens=400,
                 tools=gemini_tools,
                 thinking_config=types.ThinkingConfig(thinking_budget=0),
             )

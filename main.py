@@ -52,12 +52,12 @@ async def lifespan(app: FastAPI):
     except Exception as exc:
         logger.error("Erro ao verificar tabela chat_sessions: %s", exc)
 
-    # Inicia scheduler de follow-up (Railway = processo persistente)
-    try:
-        from followup.scheduler import start_scheduler
-        start_scheduler()
-    except Exception as exc:
-        logger.error("Erro ao iniciar scheduler de follow-up: %s", exc)
+    # Scheduler de follow-up DESATIVADO temporariamente para investigacao de custo Gemini
+    # try:
+    #     from followup.scheduler import start_scheduler
+    #     start_scheduler()
+    # except Exception as exc:
+    #     logger.error("Erro ao iniciar scheduler de follow-up: %s", exc)
 
     logger.info("Agente pronto")
 
