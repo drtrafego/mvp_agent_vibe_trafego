@@ -30,21 +30,22 @@ def _build_service():
 
 
 def _find_slots(days_ahead: int = 3) -> list[datetime]:
-    """Retorna lista de candidatos de slot nos proximos dias_ahead dias uteis."""
+    """Retorna lista de candidatos de slot nos proximos dias_ahead dias uteis,
+    incluindo HOJE se ainda houver horarios disponiveis (com 30 min de antecedencia)."""
     slots = []
     now = datetime.now(TZ_SP)
     day_cursor = now.date()
     checked_days = 0
+    min_advance = now + timedelta(minutes=30)  # so oferece slots com 30min+ de antecedencia
 
     while len(slots) < days_ahead * len(SLOT_HOURS) and checked_days < 30:
+        if day_cursor.weekday() < 5:  # segunda a sexta
+            for hour in SLOT_HOURS:
+                candidate = datetime(day_cursor.year, day_cursor.month, day_cursor.day, hour, 0, 0, tzinfo=TZ_SP)
+                if candidate > min_advance:
+                    slots.append(candidate)
         checked_days += 1
         day_cursor += timedelta(days=1)
-        if day_cursor.weekday() >= 5:  # sabado ou domingo
-            continue
-        for hour in SLOT_HOURS:
-            candidate = datetime(day_cursor.year, day_cursor.month, day_cursor.day, hour, 0, 0, tzinfo=TZ_SP)
-            if candidate > now:
-                slots.append(candidate)
 
     return slots
 

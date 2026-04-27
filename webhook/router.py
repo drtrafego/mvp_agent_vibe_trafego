@@ -50,13 +50,11 @@ def _is_duplicate(msg_id: str) -> bool:
 
 async def _process_and_respond(phone: str, data: dict) -> None:
     """
-    Processa uma mensagem e envia resposta via worker existente.
-
-    Chamado via BackgroundTasks — o lock Redis dentro de process_phone
-    garante que mensagens concorrentes do mesmo phone nao se sobreponham.
+    Adiciona mensagem ao buffer de debounce.
+    Apos DEBOUNCE_SECONDS sem nova msg, todas sao processadas juntas.
     """
-    from queue_manager.worker import process_phone
-    await process_phone(phone, data)
+    from webhook.debouncer import add_message
+    await add_message(phone, data)
 
 
 def _normalize_phone(raw: str) -> str:
