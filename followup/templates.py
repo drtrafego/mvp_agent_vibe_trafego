@@ -77,7 +77,13 @@ def get_followup_message(lead: dict) -> str | None:
         )
 
     if count == 4:
+        return (
+            f"{nome}, ainda dá tempo de marcar uma conversa. "
+            "Se mudar de ideia até amanhã, é só me chamar."
+        )
+
+    if count == 5:
         return f"{nome}, última mensagem da minha parte. Sucesso no seu negócio!"
 
-    # count >= 5: nao enviar
+    # count >= 6: nao enviar
     return None

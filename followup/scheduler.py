@@ -25,11 +25,12 @@ _supabase: Client | None = None
 
 # Delay por contagem de follow-up (count -> horas após última msg do lead)
 FU_DELAYS_HOURS = {
-    0: 1,   # FU0: 60 min
+    0: 1,   # FU0: 1h
     1: 4,   # FU1: 4h
-    2: 48,  # FU2: 48h
-    3: 60,  # FU3: 60h
-    4: 72,  # FU4: 72h (última)
+    2: 12,  # FU2: 12h
+    3: 24,  # FU3: 24h
+    4: 48,  # FU4: 48h
+    5: 60,  # FU5: 60h (última)
 }
 
 ELIGIBLE_STAGES = ["novo", "qualificando", "interesse"]
@@ -76,7 +77,7 @@ async def run_followup() -> None:
                 "last_lead_msg_at, last_bot_msg_at"
             )
             .in_("stage", ELIGIBLE_STAGES)
-            .lt("followup_count", 5)
+            .lt("followup_count", 6)
             .not_.is_("phone", "null")
             .not_.is_("last_lead_msg_at", "null")
             .execute()
