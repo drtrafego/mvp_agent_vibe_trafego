@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 
 
 def _first_name(lead: dict) -> str:
-    name = lead.get("name", "").strip()
+    name = (lead.get("name") or "").strip()
     if not name:
         return "Olá"
     return name.split()[0]
@@ -29,7 +29,7 @@ def get_followup_message(lead: dict) -> str | None:
     """Retorna mensagem de follow-up baseada em followup_count, nicho e observacoes.
     Retorna None se nao deve enviar mensagem."""
     count = lead.get("followup_count", 0)
-    nicho = lead.get("nicho", "").strip()
+    nicho = (lead.get("nicho") or "").strip()
     obs = lead.get("observacoes_sdr", "") or ""
     nome = _first_name(lead)
     has_nicho = bool(nicho)
