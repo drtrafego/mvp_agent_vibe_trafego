@@ -35,6 +35,12 @@ function getAvatarColor(str: string) {
   return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
 }
 
+const TZ = "America/Argentina/Buenos_Aires";
+
+function toDateKeyTZ(d: Date): string {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit" }).format(d);
+}
+
 function timeAgo(dateStr: string) {
   const diff = Date.now() - new Date(dateStr).getTime();
   const mins = Math.floor(diff / 60_000);
@@ -42,6 +48,9 @@ function timeAgo(dateStr: string) {
   if (mins < 60) return `${mins}min`;
   const hrs = Math.floor(mins / 60);
   if (hrs < 24) return `${hrs}h`;
+  const dKey = toDateKeyTZ(new Date(dateStr));
+  const todayKey = toDateKeyTZ(new Date());
+  if (dKey === todayKey) return "hoje";
   const days = Math.floor(hrs / 24);
   return `${days}d`;
 }

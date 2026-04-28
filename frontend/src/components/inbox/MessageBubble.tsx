@@ -8,22 +8,34 @@ export interface ChatMessage {
   created_at: string;
 }
 
+const TZ = "America/Argentina/Buenos_Aires";
+
 function formatTime(dateStr: string) {
   return new Date(dateStr).toLocaleTimeString("pt-BR", {
+    timeZone: TZ,
     hour: "2-digit",
     minute: "2-digit",
   });
 }
 
-function formatDateSeparator(dateStr: string) {
-  const d = new Date(dateStr);
-  const today = new Date();
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
+function toDateKeyTZ(dateStr: string): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: TZ,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date(dateStr));
+}
 
-  if (d.toDateString() === today.toDateString()) return "Hoje";
-  if (d.toDateString() === yesterday.toDateString()) return "Ontem";
-  return d.toLocaleDateString("pt-BR", {
+function formatDateSeparator(dateStr: string) {
+  const key = toDateKeyTZ(dateStr);
+  const todayKey = toDateKeyTZ(new Date().toISOString());
+  const yesterdayKey = toDateKeyTZ(new Date(Date.now() - 86_400_000).toISOString());
+
+  if (key === todayKey) return "Hoje";
+  if (key === yesterdayKey) return "Ontem";
+  return new Date(dateStr).toLocaleDateString("pt-BR", {
+    timeZone: TZ,
     day: "2-digit",
     month: "long",
     year: "numeric",
@@ -31,7 +43,7 @@ function formatDateSeparator(dateStr: string) {
 }
 
 function toDateKey(dateStr: string) {
-  return new Date(dateStr).toDateString();
+  return toDateKeyTZ(dateStr);
 }
 
 interface MessageBubbleProps {

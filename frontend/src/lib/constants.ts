@@ -46,29 +46,51 @@ export function cleanPhoneForWhatsApp(phone: string): string {
   return phone.replace(/[\s\-\(\)]/g, "").replace(/^\+/, "");
 }
 
+const TZ = "America/Argentina/Buenos_Aires";
+
 function toDate(date: Date | number): Date {
   if (date instanceof Date) return date;
-  // If number is less than 1e12, it's in seconds; otherwise milliseconds
   return new Date(date < 1e12 ? date * 1000 : date);
+}
+
+function dateKeyInTZ(d: Date): string {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit" }).format(d);
 }
 
 export function formatDate(date: Date | number | null): string {
   if (!date) return "-";
   const d = toDate(date);
   return new Intl.DateTimeFormat("pt-BR", {
+    timeZone: TZ,
     day: "numeric",
     month: "short",
     year: "numeric",
   }).format(d);
 }
 
+export function formatDateTime(date: Date | number | null): string {
+  if (!date) return "-";
+  const d = toDate(date);
+  return new Intl.DateTimeFormat("pt-BR", {
+    timeZone: TZ,
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(d);
+}
+
 export function formatRelativeDate(date: Date | number): string {
   const d = toDate(date);
   const now = new Date();
+  const todayKey = dateKeyInTZ(now);
+  const dKey = dateKeyInTZ(d);
+
   const diffMs = now.getTime() - d.getTime();
   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-  if (diffDays === 0) return "Hoje";
+  if (dKey === todayKey) return "Hoje";
   if (diffDays === 1) return "Ontem";
   if (diffDays < 7) return `Há ${diffDays} dias`;
   if (diffDays < 30) return `Há ${Math.floor(diffDays / 7)} semanas`;

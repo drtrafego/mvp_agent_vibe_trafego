@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { Search, Users, Download } from "lucide-react";
-import { formatDate } from "@/lib/constants";
+import { formatDateTime } from "@/lib/constants";
 import { SOURCE_LABELS } from "@/lib/constants";
 import type { Contact, Temperature, LeadSource } from "@/types";
 
@@ -143,7 +143,7 @@ export function ContactsTable({ contacts }: ContactsTableProps) {
                   </div>
                 </TableCell>
                 <TableCell className="hidden lg:table-cell text-sm text-muted-foreground">
-                  {formatDate(contact.createdAt)}
+                  {formatDateTime(contact.createdAt)}
                 </TableCell>
               </TableRow>
             ))}

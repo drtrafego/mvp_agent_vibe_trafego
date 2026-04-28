@@ -24,7 +24,7 @@ import {
   Copy,
   Check,
 } from "lucide-react";
-import { formatCurrency, formatDate, formatRelativeDate, cleanPhoneForWhatsApp } from "@/lib/constants";
+import { formatCurrency, formatDate, formatDateTime, formatRelativeDate, cleanPhoneForWhatsApp } from "@/lib/constants";
 import { ACTIVITY_TYPE_CONFIG, SOURCE_LABELS } from "@/lib/constants";
 import { toast } from "sonner";
 import type { Temperature, ActivityType, LeadSource } from "@/types";
@@ -249,7 +249,8 @@ export function ContactDetailClient({
             )}
             <div className="flex items-center gap-2 text-sm">
               <Calendar className="h-4 w-4 text-muted-foreground" />
-              <span>Criado {formatDate(contact.createdAt)}</span>
+              <span className="text-muted-foreground">Entrou em</span>
+              <span className="font-medium">{formatDateTime(contact.createdAt)}</span>
             </div>
             {contact.notes && (
               <div className="pt-2 border-t">
