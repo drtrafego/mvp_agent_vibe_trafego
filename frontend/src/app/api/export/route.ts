@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
       String(c.score), c.notes || "", formatDate(c.createdAt),
     ]);
     return new Response("\ufeff" + buildCSV(headers, rows), {
-      headers: { "Content-Type": "text/csv; charset=utf-8", "Content-Disposition": `attachment; filename="contactos-${today}.csv"` },
+      headers: { "Content-Type": "text/csv; charset=utf-8", "Content-Disposition": `attachment; filename="contatos-${today}.csv"` },
     });
   }
 

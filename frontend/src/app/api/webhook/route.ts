@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
   if (stored) {
     const secretHeader = request.headers.get("x-webhook-secret");
     if (!secretHeader || secretHeader !== stored.value) {
-      return NextResponse.json({ error: "Secret invalido ou faltante" }, { status: 401 });
+      return NextResponse.json({ error: "Secret inválido ou faltante" }, { status: 401 });
     }
   }
 
@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
 
   if (!fields.name) {
     return NextResponse.json({
-      error: "Campo 'name' ou 'nome' e requerido",
+      error: "Campo 'name' ou 'nome' é obrigatório",
       received: Object.keys(payload),
       hint: "Campos suportados: name, nome, full_name, email, correo, phone, telefone, company, empresa, notes, notas, message",
     }, { status: 400 });

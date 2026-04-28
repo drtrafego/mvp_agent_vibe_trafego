@@ -7,12 +7,12 @@ export async function POST(request: NextRequest) {
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json({ error: "JSON invalido" }, { status: 400 });
+    return NextResponse.json({ error: "JSON inválido" }, { status: 400 });
   }
 
   const { contacts: contactList } = body;
   if (!Array.isArray(contactList) || contactList.length === 0) {
-    return NextResponse.json({ error: "Se requiere un array de contactos" }, { status: 400 });
+    return NextResponse.json({ error: "Um array de contatos é obrigatório" }, { status: 400 });
   }
 
   const results = { imported: 0, failed: 0, errors: [] as string[] };

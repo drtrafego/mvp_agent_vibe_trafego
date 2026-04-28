@@ -6,14 +6,14 @@ export type LeadSource =
   | "website"
   | "whatsapp"
   | "referido"
-  | "redes_sociales"
-  | "llamada_fria"
+  | "redes_sociais"
+  | "ligacao_fria"
   | "email"
   | "formulario"
   | "evento"
   | "import"
   | "webhook"
-  | "otro";
+  | "outro";
 
 export interface Contact {
   id: string;

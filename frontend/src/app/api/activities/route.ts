@@ -27,12 +27,12 @@ export async function POST(request: NextRequest) {
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json({ error: "JSON invalido" }, { status: 400 });
+    return NextResponse.json({ error: "JSON inválido" }, { status: 400 });
   }
 
   const { type, description, contactId, dealId, scheduledAt } = body;
   if (!type || !description || !contactId) {
-    return NextResponse.json({ error: "Tipo, descripcion y contacto son requeridos" }, { status: 400 });
+    return NextResponse.json({ error: "Tipo, descrição e contato são obrigatórios" }, { status: 400 });
   }
 
   try {
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(result, { status: 201 });
   } catch (error) {
     return NextResponse.json(
-      { error: `Error al crear actividad: ${error instanceof Error ? error.message : "Unknown"}` },
+      { error: `Erro ao criar atividade: ${error instanceof Error ? error.message : "Unknown"}` },
       { status: 500 }
     );
   }

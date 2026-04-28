@@ -26,13 +26,13 @@ export async function POST(request: NextRequest) {
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json({ error: "JSON invalido" }, { status: 400 });
+    return NextResponse.json({ error: "JSON inválido" }, { status: 400 });
   }
 
   const { title, value, stageId, contactId, expectedClose, probability, notes } = body;
 
   if (!title || !contactId) {
-    return NextResponse.json({ error: "Titulo y contacto son requeridos" }, { status: 400 });
+    return NextResponse.json({ error: "Título e contato são obrigatórios" }, { status: 400 });
   }
 
   let finalStageId = stageId;
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
   }
 
   if (!finalStageId) {
-    return NextResponse.json({ error: "No hay etapas de pipeline configuradas" }, { status: 400 });
+    return NextResponse.json({ error: "Nenhuma etapa de pipeline configurada" }, { status: 400 });
   }
 
   try {

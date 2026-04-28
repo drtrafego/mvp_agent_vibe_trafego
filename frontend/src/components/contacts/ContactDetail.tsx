@@ -86,7 +86,7 @@ export function ContactDetailClient({
       toast.success("Copiado");
       setTimeout(() => setCopiedField(null), 2000);
     } catch {
-      toast.error("Error al copiar");
+      toast.error("Erro ao copiar");
     }
   };
 
@@ -287,7 +287,7 @@ export function ContactDetailClient({
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-base">
-              Actividades ({activities.length})
+              Atividades ({activities.length})
             </CardTitle>
             <Button
               variant="ghost"

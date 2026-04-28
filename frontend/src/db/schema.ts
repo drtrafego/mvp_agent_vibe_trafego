@@ -10,7 +10,7 @@ export const contacts = agente_vibe.table("contacts", {
   email: text("email"),
   phone: text("phone"),
   company: text("company"),
-  source: text("source").notNull().default("otro"),
+  source: text("source").notNull().default("outro"),
   temperature: text("temperature").notNull().default("cold"),
   score: integer("score").notNull().default(0),
   notes: text("notes"),

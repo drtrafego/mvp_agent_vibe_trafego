@@ -28,20 +28,20 @@ export async function POST(request: NextRequest) {
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json({ error: "JSON invalido" }, { status: 400 });
+    return NextResponse.json({ error: "JSON inválido" }, { status: 400 });
   }
 
   const { name, email, phone, company, source, temperature, score, notes } = body;
 
   if (!name) {
-    return NextResponse.json({ error: "El nombre es requerido" }, { status: 400 });
+    return NextResponse.json({ error: "O nome é obrigatório" }, { status: 400 });
   }
 
   try {
     const now = new Date();
     const [result] = await db.insert(contacts).values({
       name, email: email || null, phone: phone || null, company: company || null,
-      source: source || "otro", temperature: temperature || "cold",
+      source: source || "outro", temperature: temperature || "cold",
       score: score || 0, notes: notes || null, createdAt: now, updatedAt: now,
     }).returning();
 

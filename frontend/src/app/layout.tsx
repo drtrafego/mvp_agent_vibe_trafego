@@ -13,9 +13,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Auto-CRM - Tu CRM con Inteligencia Artificial",
+  title: "Auto-CRM - Seu CRM com Inteligência Artificial",
   description:
-    "CRM conversacional con pipeline de ventas, clasificacion automatica de leads y seguimiento inteligente. Construido con Claude Code.",
+    "CRM conversacional com pipeline de vendas, classificação automática de leads e acompanhamento inteligente.",
 };
 
 export default function RootLayout({
@@ -24,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${inter.variable} h-full antialiased`} suppressHydrationWarning>
+    <html lang="pt-BR" className={`${inter.variable} h-full antialiased`} suppressHydrationWarning>
       <body className="min-h-full flex" suppressHydrationWarning>
         <TooltipProvider>
           <Sidebar />

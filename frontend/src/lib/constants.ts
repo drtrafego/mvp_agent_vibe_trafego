@@ -13,14 +13,14 @@ export const SOURCE_LABELS: Record<LeadSource, string> = {
   website: "Site",
   whatsapp: "WhatsApp",
   referido: "Indicação",
-  redes_sociales: "Redes sociais",
-  llamada_fria: "Ligação fria",
+  redes_sociais: "Redes sociais",
+  ligacao_fria: "Ligação fria",
   email: "Email",
   formulario: "Formulário",
   evento: "Evento",
   import: "Importado",
   webhook: "Webhook",
-  otro: "Outro",
+  outro: "Outro",
 };
 
 export const ACTIVITY_TYPE_CONFIG: Record<

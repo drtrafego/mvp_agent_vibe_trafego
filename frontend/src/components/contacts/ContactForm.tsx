@@ -139,14 +139,14 @@ export function ContactForm({ open, onClose, initialData }: ContactFormProps) {
                   <SelectItem value="website">Site</SelectItem>
                   <SelectItem value="whatsapp">WhatsApp</SelectItem>
                   <SelectItem value="referido">Indicação</SelectItem>
-                  <SelectItem value="redes_sociales">Redes sociais</SelectItem>
-                  <SelectItem value="llamada_fria">Ligação fria</SelectItem>
+                  <SelectItem value="redes_sociais">Redes sociais</SelectItem>
+                  <SelectItem value="ligacao_fria">Ligação fria</SelectItem>
                   <SelectItem value="email">Email</SelectItem>
                   <SelectItem value="formulario">Formulário</SelectItem>
                   <SelectItem value="evento">Evento</SelectItem>
                   <SelectItem value="import">Importado</SelectItem>
                   <SelectItem value="webhook">Webhook</SelectItem>
-                  <SelectItem value="otro">Outro</SelectItem>
+                  <SelectItem value="outro">Outro</SelectItem>
                 </SelectContent>
               </Select>
             </div>
