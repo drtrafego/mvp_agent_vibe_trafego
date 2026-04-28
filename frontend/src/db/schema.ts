@@ -16,6 +16,8 @@ export const contacts = agente_vibe.table("contacts", {
   notes: text("notes"),
   nicho: text("nicho"),
   stage: text("stage"),
+  followupCount: integer("followup_count").default(0),
+  lastLeadMsgAt: timestamp("last_lead_msg_at"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });

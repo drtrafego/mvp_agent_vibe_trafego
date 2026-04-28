@@ -21,7 +21,19 @@ export default async function PipelinePage() {
 
   const columns = STAGES.map((stage) => ({
     ...stage,
-    contacts: allContacts.filter((c) => (c.stage || "novo") === stage.id),
+    contacts: allContacts
+      .filter((c) => (c.stage || "novo") === stage.id)
+      .map((c) => ({
+        id: c.id,
+        name: c.name,
+        phone: c.phone,
+        email: c.email,
+        nicho: c.nicho,
+        temperature: c.temperature,
+        score: c.score,
+        followupCount: c.followupCount ?? 0,
+        lastLeadMsgAt: c.lastLeadMsgAt ? c.lastLeadMsgAt.getTime() : null,
+      })),
   }));
 
   return (

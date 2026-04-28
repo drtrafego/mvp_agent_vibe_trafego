@@ -26,6 +26,14 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { toast } from "sonner";
 import type { Temperature } from "@/types";
 
+function relativeDays(ts: number | null): string | null {
+  if (!ts) return null;
+  const diff = Math.floor((Date.now() - ts) / (1000 * 60 * 60 * 24));
+  if (diff === 0) return "hoje";
+  if (diff === 1) return "ontem";
+  return `${diff}d atrás`;
+}
+
 interface Lead {
   id: string;
   name: string;
@@ -34,6 +42,8 @@ interface Lead {
   nicho: string | null;
   temperature: string;
   score: number;
+  followupCount: number;
+  lastLeadMsgAt: number | null;
 }
 
 interface Column {
@@ -80,6 +90,14 @@ function LeadCard({ lead, isDragging }: { lead: Lead; isDragging?: boolean }) {
             />
           </div>
           <span className="text-xs text-muted-foreground w-8 text-right">{lead.score}</span>
+        </div>
+        <div className="mt-1.5 flex items-center justify-between text-xs text-muted-foreground">
+          {lead.followupCount > 0 && (
+            <span className="bg-muted rounded px-1.5 py-0.5">FU: {lead.followupCount}/6</span>
+          )}
+          {relativeDays(lead.lastLeadMsgAt) && (
+            <span className="ml-auto">{relativeDays(lead.lastLeadMsgAt)}</span>
+          )}
         </div>
       </Card>
     </div>
