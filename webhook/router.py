@@ -202,6 +202,31 @@ async def webhook_receive(request: Request, background_tasks: BackgroundTasks) -
             background_tasks.add_task(_process_and_respond, phone, msg_data)
             logger.info("Audio agendado para processamento: phone=%s media_id=%s", phone, media_id)
 
+        elif msg_type == "button":
+            # Click-to-WhatsApp: usuario clicou num botao de template
+            button_text = msg.get("button", {}).get("text", "").strip()
+            if not button_text:
+                continue
+            msg_data = {"type": "text", "text": button_text, "msg_id": msg_id}
+            background_tasks.add_task(_process_and_respond, phone, msg_data)
+            logger.info("Botao de template agendado: phone=%s text=%r", phone, button_text)
+
+        elif msg_type == "interactive":
+            # Interactive button/list reply
+            interactive = msg.get("interactive", {})
+            interactive_type = interactive.get("type", "")
+            if interactive_type == "button_reply":
+                text = interactive.get("button_reply", {}).get("title", "").strip()
+            elif interactive_type == "list_reply":
+                text = interactive.get("list_reply", {}).get("title", "").strip()
+            else:
+                text = ""
+            if not text:
+                continue
+            msg_data = {"type": "text", "text": text, "msg_id": msg_id}
+            background_tasks.add_task(_process_and_respond, phone, msg_data)
+            logger.info("Interactive reply agendado: phone=%s text=%r", phone, text)
+
         else:
             logger.debug(
                 "Tipo de mensagem ignorado: type=%s phone=%s msg_id=%s",
