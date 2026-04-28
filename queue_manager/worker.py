@@ -117,11 +117,22 @@ async def process_phone(phone: str, data: dict) -> None:
         from datetime import datetime, timezone
 
         # Garante contato existe e atualiza last_lead_msg_at
+        contact = None
         try:
-            await get_contact(phone)
+            contact = await get_contact(phone)
             await update_contact(phone, last_lead_msg_at=datetime.now(timezone.utc))
         except Exception as exc:
             logger.error("Falha ao atualizar last_lead_msg_at para %s: %s", phone, exc)
+
+        # Se bot estiver desativado manualmente, salva a mensagem mas nao responde
+        if contact and not contact.get("bot_active", True):
+            logger.info("Bot inativo para %s — salvando mensagem sem responder", phone)
+            try:
+                from memory.chat import save_inbound_message
+                await save_inbound_message(phone, text)
+            except Exception as exc:
+                logger.error("Falha ao salvar inbound para %s: %s", phone, exc)
+            return
 
         logger.info("Processando mensagem: phone=%s type=%s", phone, data.get("type"))
         response = await agent_core.process_message(phone, text)

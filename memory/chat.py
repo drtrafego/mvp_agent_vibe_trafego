@@ -126,6 +126,27 @@ async def save_messages(phone: str, user_content: str, assistant_content: str) -
         logger.warning("redis set apos save falhou para %s: %s", phone, exc)
 
 
+async def save_inbound_message(phone: str, user_content: str) -> None:
+    """Salva apenas a mensagem do lead (sem resposta do bot). Usado quando bot esta inativo."""
+    pool = await _get_pool()
+    try:
+        await pool.execute(
+            "INSERT INTO agente_vibe.chat_sessions (phone, role, content) VALUES ($1, $2, $3)",
+            phone, "user", user_content,
+        )
+        logger.debug("postgres: mensagem inbound gravada para %s (bot inativo)", phone)
+    except Exception as exc:
+        logger.error("postgres insert inbound falhou para %s: %s", phone, exc)
+
+    messages = await _fetch_from_db(phone)
+    redis = _get_redis()
+    key = _cache_key(phone)
+    try:
+        await redis.set(key, json.dumps(messages), ex=REDIS_TTL)
+    except Exception as exc:
+        logger.warning("redis set apos inbound falhou para %s: %s", phone, exc)
+
+
 async def create_table_if_not_exists() -> None:
     """Verifica conectividade com a tabela chat_sessions no startup."""
     pool = await _get_pool()

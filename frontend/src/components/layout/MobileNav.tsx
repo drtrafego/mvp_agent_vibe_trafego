@@ -9,6 +9,7 @@ import {
   Activity,
   Settings,
   Briefcase,
+  MessageSquare,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -16,6 +17,7 @@ const navItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/pipeline", label: "Pipeline", icon: Kanban },
   { href: "/contacts", label: "Contatos", icon: Users },
+  { href: "/inbox", label: "Inbox", icon: MessageSquare },
   { href: "/deals", label: "Deals", icon: Briefcase },
   { href: "/activities", label: "Atividades", icon: Activity },
   { href: "/settings", label: "Configurações", icon: Settings },
