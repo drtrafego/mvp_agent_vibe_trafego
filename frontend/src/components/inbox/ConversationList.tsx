@@ -18,6 +18,23 @@ interface ConversationSummary {
   last_message_at: string;
 }
 
+const AVATAR_COLORS = [
+  "bg-indigo-600",
+  "bg-purple-600",
+  "bg-pink-600",
+  "bg-emerald-600",
+  "bg-amber-600",
+  "bg-sky-600",
+];
+
+function getAvatarColor(str: string) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
+}
+
 function timeAgo(dateStr: string) {
   const diff = Date.now() - new Date(dateStr).getTime();
   const mins = Math.floor(diff / 60_000);
@@ -33,8 +50,11 @@ interface ConversationListProps {
   initialConversations: ConversationSummary[];
 }
 
-export function ConversationList({ initialConversations }: ConversationListProps) {
-  const [conversations, setConversations] = useState<ConversationSummary[]>(initialConversations);
+export function ConversationList({
+  initialConversations,
+}: ConversationListProps) {
+  const [conversations, setConversations] =
+    useState<ConversationSummary[]>(initialConversations);
   const [search, setSearch] = useState("");
   const [refreshing, setRefreshing] = useState(false);
   const pathname = usePathname();
@@ -69,27 +89,35 @@ export function ConversationList({ initialConversations }: ConversationListProps
   });
 
   return (
-    <aside className="flex w-full md:w-80 md:shrink-0 flex-col border-r bg-card">
+    <aside className="flex w-full md:w-80 md:shrink-0 flex-col border-r border-zinc-800 bg-zinc-900">
       {/* Header */}
-      <div className="border-b px-4 py-4">
+      <div className="border-b border-zinc-800 px-4 py-4">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-semibold">WhatsApp Inbox</h2>
+          <h2 className="text-sm font-semibold text-zinc-100">
+            WhatsApp Inbox
+          </h2>
           <button
             onClick={() => refresh(false)}
             disabled={refreshing}
-            className="flex items-center justify-center h-6 w-6 rounded text-muted-foreground hover:text-foreground hover:bg-muted transition-colors disabled:opacity-40"
+            className="flex items-center justify-center h-6 w-6 rounded text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 transition-colors disabled:opacity-40"
             title="Atualizar conversas"
           >
-            <RefreshCw size={13} className={refreshing ? "animate-spin" : ""} />
+            <RefreshCw
+              size={13}
+              className={refreshing ? "animate-spin" : ""}
+            />
           </button>
         </div>
         <div className="relative">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <Search
+            size={14}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500"
+          />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Buscar conversa..."
-            className="w-full rounded-lg border bg-background py-2 pl-8 pr-3 text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+            className="w-full rounded-lg bg-zinc-800 py-2 pl-8 pr-3 text-xs text-zinc-300 placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-600"
           />
         </div>
       </div>
@@ -97,51 +125,62 @@ export function ConversationList({ initialConversations }: ConversationListProps
       {/* Lista */}
       <div className="flex-1 overflow-y-auto p-2">
         {filtered.length === 0 ? (
-          <p className="py-8 text-center text-xs text-muted-foreground">
+          <p className="py-8 text-center text-xs text-zinc-600">
             {search ? "Nenhuma conversa encontrada" : "Nenhuma conversa ainda"}
           </p>
         ) : (
           filtered.map((conv) => {
             const isActive = conv.id === activeId;
             const displayName = conv.name || conv.phone || "Lead";
+            const initials = displayName
+              .split(" ")
+              .slice(0, 2)
+              .map((n) => n[0])
+              .join("")
+              .toUpperCase();
+            const avatarColor = getAvatarColor(conv.id);
+
             return (
-              <Link
-                key={conv.id}
-                href={`/inbox/${conv.id}`}
-                className={cn(
-                  "flex items-start gap-3 rounded-lg p-3 transition-colors",
-                  isActive ? "bg-accent" : "hover:bg-muted/50"
-                )}
-              >
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
-                  {displayName[0].toUpperCase()}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="truncate text-sm font-medium">{displayName}</p>
-                    <span className="text-[10px] text-muted-foreground shrink-0">
-                      {timeAgo(conv.last_message_at)}
-                    </span>
-                  </div>
-                  {conv.last_message && (
-                    <p className="truncate text-xs text-muted-foreground mt-0.5">
-                      {conv.last_role === "assistant" ? "Bot: " : ""}
-                      {conv.last_message}
-                    </p>
+              <Link key={conv.id} href={`/inbox/${conv.id}`}>
+                <div
+                  className={cn(
+                    "flex items-center gap-3 rounded-xl px-3 py-3 transition-colors cursor-pointer",
+                    isActive ? "bg-zinc-800" : "hover:bg-zinc-800/60"
                   )}
-                  <div className="flex items-center gap-1 mt-1">
-                    {conv.bot_active ? (
-                      <span className="flex items-center gap-0.5 text-[10px] text-primary">
-                        <Bot size={10} /> ativo
-                      </span>
-                    ) : (
-                      <span className="flex items-center gap-0.5 text-[10px] text-orange-500">
-                        <User size={10} /> humano
-                      </span>
+                >
+                  <div
+                    className={cn(
+                      "flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white",
+                      avatarColor
                     )}
-                    {conv.stage && (
-                      <span className="text-[10px] text-muted-foreground">&middot; {conv.stage}</span>
-                    )}
+                  >
+                    {initials}
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-1">
+                      <span className="truncate text-sm font-medium text-zinc-300">
+                        {displayName}
+                      </span>
+                      <span className="shrink-0 text-[10px] text-zinc-600">
+                        {timeAgo(conv.last_message_at)}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between gap-1 mt-0.5">
+                      <span className="truncate text-xs text-zinc-500">
+                        {conv.last_role === "assistant" ? "Bot: " : ""}
+                        {conv.last_message || "Sem mensagens"}
+                      </span>
+
+                      <div className="flex shrink-0 items-center gap-1">
+                        {conv.bot_active ? (
+                          <Bot size={11} className="text-indigo-400" title="Bot ativo" />
+                        ) : (
+                          <User size={11} className="text-orange-400" title="Modo humano" />
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </Link>

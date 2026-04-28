@@ -43,13 +43,13 @@ export default async function InboxPage() {
       <ConversationList initialConversations={conversations} />
 
       {/* Área vazia no desktop */}
-      <div className="hidden md:flex flex-1 items-center justify-center bg-muted/20">
+      <div className="hidden md:flex flex-1 items-center justify-center bg-zinc-950">
         <div className="text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-muted">
-            <MessageSquare size={28} className="text-muted-foreground" />
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-zinc-800/50">
+            <MessageSquare size={28} className="text-zinc-500" />
           </div>
-          <p className="text-sm font-medium text-muted-foreground">Selecione uma conversa</p>
-          <p className="mt-1 text-xs text-muted-foreground/70">
+          <p className="text-sm font-medium text-zinc-400">Selecione uma conversa</p>
+          <p className="mt-1 text-xs text-zinc-600">
             Escolha um lead na lista ao lado
           </p>
         </div>
