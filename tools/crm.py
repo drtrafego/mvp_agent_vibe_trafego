@@ -92,7 +92,7 @@ async def append_observation(phone: str, obs: str) -> None:
 
 
 async def advance_stage(phone: str, new_stage: str) -> None:
-    """Muda o stage validando contra VALID_STAGES."""
+    """Muda o stage validando contra VALID_STAGES. Dispara automacao de deal em background."""
     if new_stage not in VALID_STAGES:
         logger.warning("Stage invalido: %s ignorado para phone %s", new_stage, phone)
         return
@@ -102,6 +102,15 @@ async def advance_stage(phone: str, new_stage: str) -> None:
         phone, new_stage,
     )
     logger.info("Stage atualizado: phone=%s novo_stage=%s", phone, new_stage)
+    asyncio.create_task(_trigger_deal_automation(phone, new_stage))
+
+
+async def _trigger_deal_automation(phone: str, new_stage: str) -> None:
+    try:
+        from tools.deals import auto_deal_on_stage_change
+        await auto_deal_on_stage_change(phone, new_stage)
+    except Exception as exc:
+        logger.warning("deal automation falhou: phone=%s stage=%s: %s", phone, new_stage, exc)
 
 
 async def mark_bot_message(phone: str) -> None:
