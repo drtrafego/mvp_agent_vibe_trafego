@@ -79,7 +79,7 @@ export interface CrmConfig {
   };
   leadSources: string[];
   preferences: {
-    language: "es" | "en";
+    language: "es" | "en" | "pt";
     theme: "light" | "dark" | "auto";
   };
 }
