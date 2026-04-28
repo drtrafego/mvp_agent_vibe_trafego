@@ -113,6 +113,11 @@ export function ContactsTable({ contacts }: ContactsTableProps) {
                     <p className="text-xs text-muted-foreground">
                       {contact.email || "Sem email"}
                     </p>
+                    {contact.nicho && (
+                      <p className="text-xs text-primary/70 font-medium">
+                        {contact.nicho}
+                      </p>
+                    )}
                   </div>
                 </TableCell>
                 <TableCell className="hidden sm:table-cell">
