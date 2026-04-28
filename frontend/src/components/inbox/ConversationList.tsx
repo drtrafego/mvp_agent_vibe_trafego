@@ -184,9 +184,9 @@ export function ConversationList({
 
                       <div className="flex shrink-0 items-center gap-1">
                         {conv.bot_active ? (
-                          <Bot size={11} className="text-indigo-400" title="Bot ativo" />
+                          <span title="Bot ativo"><Bot size={11} className="text-indigo-400" /></span>
                         ) : (
-                          <User size={11} className="text-orange-400" title="Modo humano" />
+                          <span title="Modo humano"><User size={11} className="text-orange-400" /></span>
                         )}
                       </div>
                     </div>

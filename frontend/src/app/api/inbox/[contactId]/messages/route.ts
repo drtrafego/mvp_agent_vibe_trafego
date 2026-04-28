@@ -19,7 +19,7 @@ export async function GET(
 
   try {
     const rows = await db.execute(sql`
-      SELECT role, content, created_at
+      SELECT role, content, message_type, media_id, created_at
       FROM agente_vibe.chat_sessions
       WHERE phone = ${contact.phone}
       ORDER BY created_at ASC

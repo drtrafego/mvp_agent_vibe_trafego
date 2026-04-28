@@ -129,7 +129,11 @@ async def process_phone(phone: str, data: dict) -> None:
             logger.info("Bot inativo para %s — salvando mensagem sem responder", phone)
             try:
                 from memory.chat import save_inbound_message
-                await save_inbound_message(phone, text)
+                await save_inbound_message(
+                    phone, text,
+                    message_type=data.get("type", "text"),
+                    media_id=data.get("media_id") if data.get("type") == "audio" else None,
+                )
             except Exception as exc:
                 logger.error("Falha ao salvar inbound para %s: %s", phone, exc)
             return
@@ -144,7 +148,11 @@ async def process_phone(phone: str, data: dict) -> None:
             logger.info("Resposta gerada: phone=%s text=%r", phone, response[:300])
             sent = await send_message(phone, response)
             if sent:
-                await save_messages(phone, text, response)
+                await save_messages(
+                    phone, text, response,
+                    user_message_type=data.get("type", "text"),
+                    user_media_id=data.get("media_id") if data.get("type") == "audio" else None,
+                )
                 try:
                     await mark_bot_message(phone)
                 except Exception:

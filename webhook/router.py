@@ -48,6 +48,15 @@ def _is_duplicate(msg_id: str) -> bool:
     return False
 
 
+async def _save_origin_bg(phone: str, referral: dict) -> None:
+    """Wrapper async para salvar origem do lead em background."""
+    try:
+        from tools.crm import save_origin
+        await save_origin(phone, referral)
+    except Exception as exc:
+        logger.warning("save_origin falhou: phone=%s: %s", phone, exc)
+
+
 async def _process_and_respond(phone: str, data: dict) -> None:
     """
     Adiciona mensagem ao buffer de debounce.
@@ -176,6 +185,11 @@ async def webhook_receive(request: Request, background_tasks: BackgroundTasks) -
         if phone == _normalize_phone(settings.META_PHONE_NUMBER_ID):
             logger.debug("Mensagem ignorada (enviada pelo bot): msg_id=%s", msg_id)
             continue
+
+        # Rastreamento de origem: referral presente em Click-to-WhatsApp
+        referral = msg.get("referral")
+        if referral:
+            background_tasks.add_task(_save_origin_bg, phone, referral)
 
         if msg_type == "text":
             body_text = msg.get("text", {}).get("body", "").strip()

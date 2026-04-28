@@ -1,6 +1,8 @@
+import asyncio
 import logging
 from datetime import datetime, timezone
 from typing import Optional
+from urllib.parse import urlparse, parse_qs
 
 import asyncpg
 
@@ -109,6 +111,108 @@ async def mark_bot_message(phone: str) -> None:
         "UPDATE agente_vibe.contacts SET last_bot_msg_at = now(), updated_at = now() WHERE phone = $1",
         phone,
     )
+
+
+async def save_origin(phone: str, referral: dict) -> None:
+    """Salva dados de origem do lead a partir do objeto referral da Meta. Nao sobrescreve campos ja preenchidos."""
+    if not referral:
+        return
+
+    updates: dict = {}
+
+    ad_id = referral.get("source_id", "")
+    if ad_id:
+        updates["ad_id"] = ad_id
+
+    placement = referral.get("source_type", "")
+    if placement:
+        updates["placement"] = placement
+
+    source_url = referral.get("source_url", "")
+    if source_url:
+        try:
+            parsed = urlparse(source_url)
+            params = parse_qs(parsed.query)
+            for key in ("utm_source", "utm_medium", "utm_campaign", "utm_content"):
+                val = params.get(key, [None])[0]
+                if val:
+                    updates[key] = val
+        except Exception:
+            pass
+
+    if not updates:
+        return
+
+    pool = await _get_pool()
+    # COALESCE preserva valor existente — nao sobrescreve origem ja registrada
+    sets = ", ".join(f"{k} = COALESCE({k}, ${i+2})" for i, k in enumerate(updates))
+    values = list(updates.values())
+    await pool.execute(
+        f"UPDATE agente_vibe.contacts SET {sets}, updated_at = now() WHERE phone = $1",
+        phone, *values,
+    )
+    logger.info("Origem salva: phone=%s updates=%s", phone, list(updates.keys()))
+
+    if ad_id:
+        asyncio.create_task(_enrich_from_meta(phone, ad_id))
+
+
+async def _enrich_from_meta(phone: str, ad_id: str) -> None:
+    """Busca ad_name, campaign_name e adset_name via Meta Graph API e atualiza o contato."""
+    import httpx
+    from config.settings import settings
+
+    try:
+        async with httpx.AsyncClient(timeout=10) as client:
+            resp = await client.get(
+                f"https://graph.facebook.com/v20.0/{ad_id}",
+                params={"fields": "id,name,campaign_id,adset_id", "access_token": settings.META_ACCESS_TOKEN},
+            )
+            if resp.status_code != 200:
+                logger.warning("Meta API falhou para ad_id=%s: %s", ad_id, resp.status_code)
+                return
+            data = resp.json()
+
+        updates: dict = {}
+        if data.get("name"):
+            updates["ad_name"] = data["name"]
+
+        campaign_id = data.get("campaign_id")
+        adset_id = data.get("adset_id")
+        if campaign_id:
+            updates["campaign_id"] = campaign_id
+        if adset_id:
+            updates["adset_id"] = adset_id
+
+        async with httpx.AsyncClient(timeout=10) as client:
+            if campaign_id:
+                r = await client.get(
+                    f"https://graph.facebook.com/v20.0/{campaign_id}",
+                    params={"fields": "name", "access_token": settings.META_ACCESS_TOKEN},
+                )
+                if r.status_code == 200:
+                    updates["campaign_name"] = r.json().get("name")
+
+            if adset_id:
+                r = await client.get(
+                    f"https://graph.facebook.com/v20.0/{adset_id}",
+                    params={"fields": "name", "access_token": settings.META_ACCESS_TOKEN},
+                )
+                if r.status_code == 200:
+                    updates["adset_name"] = r.json().get("name")
+
+        updates = {k: v for k, v in updates.items() if v}
+        if updates:
+            pool = await _get_pool()
+            sets = ", ".join(f"{k} = COALESCE({k}, ${i+2})" for i, k in enumerate(updates))
+            values = list(updates.values())
+            await pool.execute(
+                f"UPDATE agente_vibe.contacts SET {sets}, updated_at = now() WHERE phone = $1",
+                phone, *values,
+            )
+            logger.info("Meta enrich ok: phone=%s updates=%s", phone, list(updates.keys()))
+    except Exception as exc:
+        logger.warning("Meta enrich falhou: phone=%s ad_id=%s: %s", phone, ad_id, exc)
 
 
 async def update_lead_profile(

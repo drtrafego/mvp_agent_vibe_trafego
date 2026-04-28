@@ -28,9 +28,24 @@ export default async function ContactDetailPage({
 
   const contactActivities = await db.select().from(activities).where(eq(activities.contactId, id)).orderBy(desc(activities.createdAt));
 
+  const contactWithOrigin = {
+    ...contact,
+    adId: contact.adId ?? null,
+    adName: contact.adName ?? null,
+    campaignId: contact.campaignId ?? null,
+    campaignName: contact.campaignName ?? null,
+    adsetId: contact.adsetId ?? null,
+    adsetName: contact.adsetName ?? null,
+    placement: contact.placement ?? null,
+    utmSource: contact.utmSource ?? null,
+    utmMedium: contact.utmMedium ?? null,
+    utmCampaign: contact.utmCampaign ?? null,
+    utmContent: contact.utmContent ?? null,
+  };
+
   return (
     <ContactDetailClient
-      contact={contact as Parameters<typeof ContactDetailClient>[0]["contact"]}
+      contact={contactWithOrigin as Parameters<typeof ContactDetailClient>[0]["contact"]}
       deals={contactDeals as Parameters<typeof ContactDetailClient>[0]["deals"]}
       activities={contactActivities as Parameters<typeof ContactDetailClient>[0]["activities"]}
     />

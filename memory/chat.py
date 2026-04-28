@@ -101,7 +101,13 @@ async def _fetch_from_db(phone: str) -> list[dict]:
         return []
 
 
-async def save_messages(phone: str, user_content: str, assistant_content: str) -> None:
+async def save_messages(
+    phone: str,
+    user_content: str,
+    assistant_content: str,
+    user_message_type: str = "text",
+    user_media_id: str | None = None,
+) -> None:
     """
     Salva mensagem do user e resposta do assistant no Postgres.
     Apos gravacao, invalida e reconstroi o cache Redis.
@@ -109,8 +115,11 @@ async def save_messages(phone: str, user_content: str, assistant_content: str) -
     pool = await _get_pool()
     try:
         await pool.executemany(
-            "INSERT INTO agente_vibe.chat_sessions (phone, role, content) VALUES ($1, $2, $3)",
-            [(phone, "user", user_content), (phone, "assistant", assistant_content)],
+            "INSERT INTO agente_vibe.chat_sessions (phone, role, content, message_type, media_id) VALUES ($1, $2, $3, $4, $5)",
+            [
+                (phone, "user", user_content, user_message_type, user_media_id),
+                (phone, "assistant", assistant_content, "text", None),
+            ],
         )
         logger.debug("postgres: 2 mensagens gravadas para %s", phone)
     except Exception as exc:
@@ -126,13 +135,18 @@ async def save_messages(phone: str, user_content: str, assistant_content: str) -
         logger.warning("redis set apos save falhou para %s: %s", phone, exc)
 
 
-async def save_inbound_message(phone: str, user_content: str) -> None:
+async def save_inbound_message(
+    phone: str,
+    user_content: str,
+    message_type: str = "text",
+    media_id: str | None = None,
+) -> None:
     """Salva apenas a mensagem do lead (sem resposta do bot). Usado quando bot esta inativo."""
     pool = await _get_pool()
     try:
         await pool.execute(
-            "INSERT INTO agente_vibe.chat_sessions (phone, role, content) VALUES ($1, $2, $3)",
-            phone, "user", user_content,
+            "INSERT INTO agente_vibe.chat_sessions (phone, role, content, message_type, media_id) VALUES ($1, $2, $3, $4, $5)",
+            phone, "user", user_content, message_type, media_id,
         )
         logger.debug("postgres: mensagem inbound gravada para %s (bot inativo)", phone)
     except Exception as exc:

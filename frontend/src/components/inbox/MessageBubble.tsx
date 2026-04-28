@@ -5,6 +5,8 @@ import { cn } from "@/lib/utils";
 export interface ChatMessage {
   role: string;
   content: string;
+  message_type?: string;
+  media_id?: string | null;
   created_at: string;
 }
 
@@ -72,7 +74,23 @@ export function MessageBubble({ message }: MessageBubbleProps) {
       )}
 
       <div className={bubbleClass}>
-        <p className="whitespace-pre-wrap break-words">{message.content}</p>
+        {message.message_type === "audio" && message.media_id ? (
+          <div className="flex flex-col gap-1.5">
+            <audio
+              controls
+              preload="none"
+              src={`/api/inbox/media/${message.media_id}`}
+              className="h-8 w-48 accent-indigo-400"
+            />
+            {message.content && (
+              <p className="whitespace-pre-wrap break-words text-xs opacity-80">
+                {message.content}
+              </p>
+            )}
+          </div>
+        ) : (
+          <p className="whitespace-pre-wrap break-words">{message.content}</p>
+        )}
       </div>
 
       <span className="text-[10px] text-zinc-600 px-1">

@@ -23,6 +23,7 @@ import {
   MessageCircle,
   Copy,
   Check,
+  Megaphone,
 } from "lucide-react";
 import { formatCurrency, formatDate, formatDateTime, formatRelativeDate, cleanPhoneForWhatsApp } from "@/lib/constants";
 import { ACTIVITY_TYPE_CONFIG, SOURCE_LABELS } from "@/lib/constants";
@@ -51,6 +52,17 @@ interface ContactDetailClientProps {
     nicho: string | null;
     stage: string | null;
     createdAt: number | Date;
+    adId?: string | null;
+    adName?: string | null;
+    campaignId?: string | null;
+    campaignName?: string | null;
+    adsetId?: string | null;
+    adsetName?: string | null;
+    placement?: string | null;
+    utmSource?: string | null;
+    utmMedium?: string | null;
+    utmCampaign?: string | null;
+    utmContent?: string | null;
   };
   deals: Array<{
     id: string;
@@ -259,6 +271,74 @@ export function ContactDetailClient({
             )}
           </CardContent>
         </Card>
+
+        {/* Rastreamento de origem */}
+        {(contact.adName || contact.campaignName || contact.adsetName || contact.placement || contact.utmSource || contact.utmCampaign) && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base flex items-center gap-2">
+                <Megaphone className="h-4 w-4 text-muted-foreground" />
+                Origem do Anúncio
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2 text-sm">
+              {contact.campaignName && (
+                <div className="flex gap-2">
+                  <span className="text-muted-foreground shrink-0 w-24">Campanha</span>
+                  <span className="font-medium truncate">{contact.campaignName}</span>
+                </div>
+              )}
+              {contact.adsetName && (
+                <div className="flex gap-2">
+                  <span className="text-muted-foreground shrink-0 w-24">Conjunto</span>
+                  <span className="font-medium truncate">{contact.adsetName}</span>
+                </div>
+              )}
+              {contact.adName && (
+                <div className="flex gap-2">
+                  <span className="text-muted-foreground shrink-0 w-24">Anúncio</span>
+                  <span className="font-medium truncate">{contact.adName}</span>
+                </div>
+              )}
+              {contact.placement && (
+                <div className="flex gap-2">
+                  <span className="text-muted-foreground shrink-0 w-24">Placement</span>
+                  <span className="font-medium">{contact.placement}</span>
+                </div>
+              )}
+              {contact.utmSource && (
+                <div className="flex gap-2">
+                  <span className="text-muted-foreground shrink-0 w-24">UTM Source</span>
+                  <span className="font-medium">{contact.utmSource}</span>
+                </div>
+              )}
+              {contact.utmMedium && (
+                <div className="flex gap-2">
+                  <span className="text-muted-foreground shrink-0 w-24">UTM Medium</span>
+                  <span className="font-medium">{contact.utmMedium}</span>
+                </div>
+              )}
+              {contact.utmCampaign && (
+                <div className="flex gap-2">
+                  <span className="text-muted-foreground shrink-0 w-24">UTM Campaign</span>
+                  <span className="font-medium">{contact.utmCampaign}</span>
+                </div>
+              )}
+              {contact.utmContent && (
+                <div className="flex gap-2">
+                  <span className="text-muted-foreground shrink-0 w-24">UTM Content</span>
+                  <span className="font-medium">{contact.utmContent}</span>
+                </div>
+              )}
+              {contact.adId && (
+                <div className="flex gap-2">
+                  <span className="text-muted-foreground shrink-0 w-24">Ad ID</span>
+                  <span className="font-mono text-xs text-muted-foreground">{contact.adId}</span>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
 
         {/* Deals */}
         <Card>
