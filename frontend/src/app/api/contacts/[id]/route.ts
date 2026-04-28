@@ -49,6 +49,7 @@ export async function PUT(
   if (body.temperature !== undefined) updateData.temperature = body.temperature;
   if (body.score !== undefined) updateData.score = Math.max(0, Math.min(100, body.score));
   if (body.notes !== undefined) updateData.notes = body.notes;
+  if (body.stage !== undefined) updateData.stage = body.stage;
 
   const [result] = await db.update(contacts).set(updateData).where(eq(contacts.id, id)).returning();
 
