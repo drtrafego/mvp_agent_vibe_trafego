@@ -13,8 +13,12 @@ export default async function ContactDetailPage({
 }) {
   const { id } = await params;
 
-  const [contact] = await db.select().from(contacts).where(eq(contacts.id, id));
-  if (!contact) notFound();
+  const [raw] = await db.select().from(contacts).where(eq(contacts.id, id));
+  if (!raw) notFound();
+
+  const base = raw.temperature === "hot" ? 50 : raw.temperature === "warm" ? 30 : 10;
+  const bonus = (raw.email ? 10 : 0) + (raw.phone ? 10 : 0) + (raw.company ? 5 : 0);
+  const contact = { ...raw, score: raw.score !== 0 ? raw.score : Math.min(100, base + bonus) };
 
   const contactDeals = await db.select({
     id: deals.id, title: deals.title, value: deals.value,
