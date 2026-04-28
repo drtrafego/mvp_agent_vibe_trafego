@@ -16,3 +16,5 @@ test_hourly.py
 send_to_user.py
 oauth_flow.py
 .claude/
+
+.vercel

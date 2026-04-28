@@ -46,7 +46,7 @@ async def _get_stage_ids() -> dict[str, str]:
     if _stage_ids:
         return _stage_ids
     pool = await _get_pool()
-    rows = await pool.fetch("SELECT id, name FROM agente_vibe.pipeline_stages")
+    rows = await pool.fetch("SELECT id, name FROM agente_trafego.pipeline_stages")
     _stage_ids = {r["name"]: r["id"] for r in rows}
     return _stage_ids
 
@@ -95,7 +95,7 @@ async def auto_deal_on_stage_change(phone: str, new_stage: str) -> None:
         contact = await pool.fetchrow(
             """
             SELECT id, name, nicho, temperature, followup_count, observacoes_sdr
-            FROM agente_vibe.contacts
+            FROM agente_trafego.contacts
             WHERE phone = $1
             """,
             phone,
@@ -107,14 +107,14 @@ async def auto_deal_on_stage_change(phone: str, new_stage: str) -> None:
         contact_id = contact_dict["id"]
 
         existing = await pool.fetchrow(
-            "SELECT id FROM agente_vibe.deals WHERE contact_id = $1 LIMIT 1",
+            "SELECT id FROM agente_trafego.deals WHERE contact_id = $1 LIMIT 1",
             contact_id,
         )
 
         if new_stage == "agendado":
             if existing:
                 await pool.execute(
-                    "UPDATE agente_vibe.deals SET stage_id = $2, updated_at = now() WHERE id = $1",
+                    "UPDATE agente_trafego.deals SET stage_id = $2, updated_at = now() WHERE id = $1",
                     existing["id"], pipeline_stage_id,
                 )
                 logger.info("Deal atualizado -> Contato Feito: contact_id=%s", contact_id)
@@ -126,7 +126,7 @@ async def auto_deal_on_stage_change(phone: str, new_stage: str) -> None:
 
                 await pool.execute(
                     """
-                    INSERT INTO agente_vibe.deals
+                    INSERT INTO agente_trafego.deals
                       (id, title, value, stage_id, contact_id, probability)
                     VALUES
                       (gen_random_uuid()::text, $1, 0, $2, $3, $4)
@@ -142,7 +142,7 @@ async def auto_deal_on_stage_change(phone: str, new_stage: str) -> None:
             if existing:
                 await pool.execute(
                     """
-                    UPDATE agente_vibe.deals
+                    UPDATE agente_trafego.deals
                     SET stage_id = $2,
                         probability = LEAST(probability + 20, 95),
                         updated_at = now()
@@ -155,7 +155,7 @@ async def auto_deal_on_stage_change(phone: str, new_stage: str) -> None:
         elif new_stage in ("sem_interesse", "perdido", "bloqueado"):
             if existing:
                 await pool.execute(
-                    "UPDATE agente_vibe.deals SET stage_id = $2, updated_at = now() WHERE id = $1",
+                    "UPDATE agente_trafego.deals SET stage_id = $2, updated_at = now() WHERE id = $1",
                     existing["id"], pipeline_stage_id,
                 )
                 logger.info(

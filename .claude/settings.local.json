@@ -9,7 +9,14 @@
       "Bash(mkdir -p ~/.ssh)",
       "Bash(ssh-keyscan github.com)",
       "Bash(rm -rf frontend/.git)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "mcp__plugin_vercel_vercel__list_teams",
+      "mcp__plugin_vercel_vercel__list_projects",
+      "mcp__plugin_vercel_vercel__get_project",
+      "mcp__plugin_vercel_vercel__list_deployments",
+      "mcp__plugin_vercel_vercel__web_fetch_vercel_url",
+      "mcp__plugin_vercel_vercel__get_access_to_vercel_url",
+      "mcp__plugin_vercel_vercel__get_deployment_build_logs"
     ]
   }
 }

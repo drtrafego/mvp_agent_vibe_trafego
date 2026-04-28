@@ -1,8 +1,8 @@
 import { pgSchema, text, integer, boolean, timestamp } from "drizzle-orm/pg-core";
 
-const agente_vibe = pgSchema("agente_vibe");
+const agente_trafego = pgSchema("agente_trafego");
 
-export const contacts = agente_vibe.table("contacts", {
+export const contacts = agente_trafego.table("contacts", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
@@ -35,7 +35,7 @@ export const contacts = agente_vibe.table("contacts", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
-export const pipelineStages = agente_vibe.table("pipeline_stages", {
+export const pipelineStages = agente_trafego.table("pipeline_stages", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
@@ -46,7 +46,7 @@ export const pipelineStages = agente_vibe.table("pipeline_stages", {
   isLost: boolean("is_lost").notNull().default(false),
 });
 
-export const deals = agente_vibe.table("deals", {
+export const deals = agente_trafego.table("deals", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
@@ -65,7 +65,7 @@ export const deals = agente_vibe.table("deals", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
-export const activities = agente_vibe.table("activities", {
+export const activities = agente_trafego.table("activities", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
@@ -80,7 +80,7 @@ export const activities = agente_vibe.table("activities", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
-export const crmSettings = agente_vibe.table("crm_settings", {
+export const crmSettings = agente_trafego.table("crm_settings", {
   key: text("key").primaryKey(),
   value: text("value").notNull(),
 });

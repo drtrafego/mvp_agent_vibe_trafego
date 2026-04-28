@@ -74,7 +74,7 @@ async def run_followup() -> None:
             """
             SELECT phone, name, stage, nicho, observacoes_sdr,
                    followup_count, last_lead_msg_at, last_bot_msg_at
-            FROM agente_vibe.contacts
+            FROM agente_trafego.contacts
             WHERE stage = ANY($1)
               AND COALESCE(followup_count, 0) < 6
               AND phone IS NOT NULL
@@ -128,7 +128,7 @@ async def run_followup() -> None:
         try:
             pool = await _get_pool()
             await pool.execute(
-                "UPDATE agente_vibe.contacts SET followup_count = $2, last_bot_msg_at = $3, updated_at = now() WHERE phone = $1",
+                "UPDATE agente_trafego.contacts SET followup_count = $2, last_bot_msg_at = $3, updated_at = now() WHERE phone = $1",
                 phone, new_count, now,
             )
         except Exception as exc:

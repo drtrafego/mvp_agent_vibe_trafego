@@ -17,10 +17,10 @@ export async function GET() {
         last_msg.content    AS last_message,
         last_msg.role       AS last_role,
         COALESCE(last_msg.created_at, c.last_lead_msg_at, c.created_at) AS last_message_at
-      FROM agente_vibe.contacts c
+      FROM agente_trafego.contacts c
       LEFT JOIN LATERAL (
         SELECT content, role, created_at
-        FROM agente_vibe.chat_sessions
+        FROM agente_trafego.chat_sessions
         WHERE phone = c.phone
         ORDER BY created_at DESC
         LIMIT 1

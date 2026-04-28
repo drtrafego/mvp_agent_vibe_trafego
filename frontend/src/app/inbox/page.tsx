@@ -18,10 +18,10 @@ async function getConversations() {
         last_msg.content  AS last_message,
         last_msg.role     AS last_role,
         last_msg.created_at AS last_message_at
-      FROM agente_vibe.contacts c
+      FROM agente_trafego.contacts c
       INNER JOIN LATERAL (
         SELECT content, role, created_at
-        FROM agente_vibe.chat_sessions
+        FROM agente_trafego.chat_sessions
         WHERE phone = c.phone
         ORDER BY created_at DESC
         LIMIT 1

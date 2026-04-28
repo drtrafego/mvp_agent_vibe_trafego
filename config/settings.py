@@ -4,7 +4,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     # Meta
     META_ACCESS_TOKEN: str
-    META_PHONE_NUMBER_ID: str = "115216611574100"
+    META_PHONE_NUMBER_ID: str = "414594695067374"
+    META_WABA_ID: str = "404364559427067"
     META_VERIFY_TOKEN: str
     META_APP_SECRET: str = ""
 
